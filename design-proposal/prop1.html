@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Junior Web Dev Roadmap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060810;
+      --bg-2: #0a0d16;
+      --panel: rgba(15, 19, 31, 0.78);
+      --panel-strong: rgba(20, 25, 40, 0.96);
+      --line: rgba(255, 255, 255, 0.09);
+      --line-strong: rgba(255, 255, 255, 0.17);
+      --text: #f6f8ff;
+      --muted: #9ca8bd;
+      --faint: #687286;
+      --blue: #6d95ff;
+      --violet: #9b72ff;
+      --cyan: #5ee7df;
+      --green: #60e6a8;
+      --amber: #f3c76b;
+      --gray: #7f899a;
+      --danger: #ff7a7a;
+      --shadow: 0 24px 90px rgba(0, 0, 0, 0.42);
+      --radius-xl: 32px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --font: "Geist", ui-sans-serif, system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% -8%, rgba(109, 149, 255, 0.2), transparent 31%),
+        radial-gradient(circle at 84% 10%, rgba(155, 114, 255, 0.18), transparent 30%),
+        radial-gradient(circle at 72% 78%, rgba(94, 231, 223, 0.08), transparent 30%),
+        linear-gradient(180deg, #080a13 0%, #060810 52%, #04050a 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 58px 58px;
+      mask-image: radial-gradient(circle at 50% 12%, black, transparent 74%);
+      opacity: 0.28;
+    }
+
+    button,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 22px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 14px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 18px;
+      max-width: 1180px;
+      margin: 0 auto 30px;
+      padding: 14px 16px 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(8, 10, 18, 0.72);
+      box-shadow: 0 16px 52px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(22px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, rgba(109, 149, 255, 0.9), rgba(155, 114, 255, 0.82)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+      box-shadow: 0 12px 34px rgba(109, 149, 255, 0.22);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .brand h1 {
+      font-size: clamp(17px, 2vw, 21px);
+      font-weight: 750;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .brand p {
+      margin-top: 4px;
+      color: var(--faint);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .progress-cluster {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-text {
+      text-align: right;
+    }
+
+    .progress-text strong {
+      display: block;
+      font-size: 20px;
+      letter-spacing: -0.04em;
+    }
+
+    .progress-text span {
+      display: block;
+      margin-top: 2px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .progress-bar {
+      width: min(24vw, 220px);
+      height: 8px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--violet), var(--cyan));
+      box-shadow: 0 0 22px rgba(109, 149, 255, 0.5);
+      transition: width 360ms ease;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: 24px;
+      max-width: 1180px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .roadmap-shell {
+      position: relative;
+      min-height: calc(100vh - 132px);
+      padding: clamp(28px, 5vw, 56px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(109, 149, 255, 0.13), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.028)),
+        rgba(10, 13, 22, 0.82);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .roadmap-shell::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 82% 18%, rgba(155, 114, 255, 0.12), transparent 24%),
+        radial-gradient(circle at 14% 52%, rgba(94, 231, 223, 0.07), transparent 24%);
+    }
+
+    .intro {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 18px rgba(94, 231, 223, 0.8);
+    }
+
+    .intro h2 {
+      margin-top: 16px;
+      font-size: clamp(36px, 6vw, 70px);
+      font-weight: 800;
+      letter-spacing: -0.075em;
+      line-height: 0.96;
+    }
+
+    .intro p {
+      max-width: 610px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .roadmap {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 18px;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px 0 10px;
+    }
+
+    .roadmap::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      bottom: 30px;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, transparent, rgba(109, 149, 255, 0.45), rgba(155, 114, 255, 0.35), transparent);
+      box-shadow: 0 0 22px rgba(109, 149, 255, 0.22);
+    }
+
+    .roadmap-node {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 58px 1fr;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .roadmap-node:nth-child(even) .node-card {
+      grid-column: 3;
+    }
+
+    .roadmap-node:nth-child(odd) .node-card {
+      grid-column: 1;
+    }
+
+    .roadmap-node:nth-child(even) .node-dot,
+    .roadmap-node:nth-child(odd) .node-dot {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .node-card {
+      position: relative;
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      color: inherit;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .node-card::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 42px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18));
+    }
+
+    .roadmap-node:nth-child(odd) .node-card::after {
+      right: -42px;
+    }
+
+    .roadmap-node:nth-child(even) .node-card::after {
+      left: -42px;
+      transform: rotate(180deg);
+    }
+
+    .node-card:hover,
+    .node-card.active {
+      transform: translateY(-2px);
+      border-color: rgba(109, 149, 255, 0.44);
+      background: rgba(109, 149, 255, 0.085);
+      box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22);
+    }
+
+    .node-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .node-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.18;
+    }
+
+    .node-card p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .node-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 13px;
+    }
+
+    .mini-progress {
+      flex: 1;
+      height: 5px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mini-progress span {
+      display: block;
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      transition: width 260ms ease;
+    }
+
+    .node-dot {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin: 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 50%;
+      background: #0b0f1a;
+      box-shadow: 0 0 0 8px rgba(109, 149, 255, 0.08), 0 0 32px rgba(109, 149, 255, 0.15);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .roadmap-node.completed .node-dot {
+      color: #06120d;
+      background: var(--green);
+      box-shadow: 0 0 0 8px rgba(96, 230, 168, 0.09), 0 0 34px rgba(96, 230, 168, 0.26);
+    }
+
+    .roadmap-node.active .node-dot {
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .status-not-started {
+      color: var(--gray);
+      background: rgba(127, 137, 154, 0.09);
+    }
+
+    .status-learning {
+      color: var(--amber);
+      background: rgba(243, 199, 107, 0.09);
+    }
+
+    .status-practiced {
+      color: var(--blue);
+      background: rgba(109, 149, 255, 0.1);
+    }
+
+    .status-confident {
+      color: var(--green);
+      background: rgba(96, 230, 168, 0.1);
+    }
+
+    .detail-panel {
+      position: sticky;
+      top: 106px;
+      max-height: calc(100vh - 128px);
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.03)),
+        rgba(12, 15, 25, 0.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+    }
+
+    .panel-inner {
+      padding: 24px;
+    }
+
+    .panel-kicker {
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .panel-title {
+      margin-top: 12px;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      line-height: 1.02;
+    }
+
+    .panel-description {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .field {
+      margin-top: 22px;
+    }
+
+    .field label,
+    .field-title {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .status-select,
+    .notes {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      outline: none;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.2);
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .status-select {
+      height: 44px;
+      padding: 0 12px;
+    }
+
+    .notes {
+      min-height: 112px;
+      padding: 13px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .status-select:focus,
+    .notes:focus {
+      border-color: rgba(109, 149, 255, 0.55);
+      box-shadow: 0 0 0 4px rgba(109, 149, 255, 0.1);
+    }
+
+    .checklist {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.028);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .check-item input {
+      width: 15px;
+      height: 15px;
+      margin-top: 2px;
+      accent-color: var(--blue);
+    }
+
+    .prompt-box,
+    .project-box {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.032);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .project-box {
+      border-color: rgba(94, 231, 223, 0.16);
+      background: rgba(94, 231, 223, 0.045);
+    }
+
+    .save-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .reset-button {
+      min-height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.035);
+      transition: 160ms ease;
+    }
+
+    .reset-button:hover {
+      border-color: rgba(255, 122, 122, 0.4);
+      color: var(--danger);
+      background: rgba(255, 122, 122, 0.07);
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-panel {
+        position: fixed;
+        right: 14px;
+        bottom: 14px;
+        left: 14px;
+        top: auto;
+        z-index: 30;
+        max-height: 72vh;
+        transform: translateY(calc(100% - 82px));
+        transition: transform 220ms ease;
+      }
+
+      .detail-panel.open {
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 14px;
+      }
+
+      .topbar {
+        position: relative;
+        top: auto;
+        grid-template-columns: 1fr;
+      }
+
+      .progress-cluster {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .progress-text {
+        text-align: left;
+      }
+
+      .progress-bar {
+        width: 100%;
+      }
+
+      .roadmap-shell {
+        padding: 24px 16px 120px;
+      }
+
+      .roadmap::before {
+        left: 24px;
+      }
+
+      .roadmap-node {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 12px;
+      }
+
+      .roadmap-node:nth-child(even) .node-card,
+      .roadmap-node:nth-child(odd) .node-card {
+        grid-column: 2;
+      }
+
+      .roadmap-node:nth-child(even) .node-dot,
+      .roadmap-node:nth-child(odd) .node-dot {
+        grid-column: 1;
+      }
+
+      .node-card::after {
+        display: none;
+      }
+
+      .intro h2 {
+        font-size: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">JR</div>
+        <div>
+          <h1>Junior Web Dev Roadmap</h1>
+          <p id="todayFocus">Today's focus: JavaScript Foundations</p>
+        </div>
+      </div>
+
+      <div class="progress-cluster" aria-label="Overall progress">
+        <div class="progress-text">
+          <strong id="overallPercent">0%</strong>
+          <span>overall progress</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="overallFill"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="roadmap-shell" aria-label="Junior web development roadmap">
+        <div class="intro">
+          <div class="eyebrow">Full-stack interview path</div>
+          <h2>Follow the path from fundamentals to interview readiness.</h2>
+          <p>Click a topic, update your status, check off subtopics, and leave notes as you build toward junior web-dev interview confidence.</p>
+        </div>
+
+        <div class="roadmap" id="roadmap"></div>
+      </section>
+
+      <aside class="detail-panel open" id="detailPanel" aria-label="Selected roadmap topic">
+        <div class="panel-inner">
+          <div class="panel-kicker" id="panelCategory">Start</div>
+          <h2 class="panel-title" id="panelTitle">Start</h2>
+          <p class="panel-description" id="panelDescription"></p>
+
+          <div class="field">
+            <label for="statusSelect">Status</label>
+            <select class="status-select" id="statusSelect">
+              <option value="not-started">Not Started</option>
+              <option value="learning">Learning</option>
+              <option value="practiced">Practiced</option>
+              <option value="confident">Confident</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="field-title">Subtopic checklist</div>
+            <div class="checklist" id="checklist"></div>
+          </div>
+
+          <div class="field">
+            <div class="field-title">Reflection prompt</div>
+            <div class="prompt-box" id="reflectionPrompt"></div>
+          </div>
+
+          <div class="field">
+            <div class="field-title">Related project task</div>
+            <div class="project-box" id="projectTask"></div>
+          </div>
+
+          <div class="field">
+            <label for="notes">Personal notes</label>
+            <textarea class="notes" id="notes" placeholder="Write the explanation, example, or reminder you want to reuse in interviews..."></textarea>
+          </div>
+
+          <div class="save-row">
+            <span id="saveState">Saved locally</span>
+            <button class="reset-button" id="resetNode">Reset topic</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const roadmapData = [
+      {
+        id: "start",
+        title: "Start",
+        category: "Orientation",
+        description: "Set your baseline and understand how to move through the roadmap one topic at a time.",
+        checklist: ["Choose frontend, backend, or fullstack focus", "Review the full path", "Pick one topic to begin", "Create a notes habit"],
+        reflection: "What role are you preparing for, and which part of the stack feels least comfortable right now?",
+        project: "Write a short goal statement for the junior web-dev role you are targeting."
+      },
+      {
+        id: "javascript-foundations",
+        title: "JavaScript Foundations",
+        category: "Frontend fundamentals",
+        description: "Build the language foundation needed for React, Node, browser APIs, and interview explanations.",
+        checklist: ["let / const / var", "scope", "hoisting", "closures", "this keyword", "== vs ==="],
+        reflection: "Can you explain a closure using a simple real-world example instead of just giving a definition?",
+        project: "Create a small utility module that uses functions, objects, arrays, and closures."
+      },
+      {
+        id: "async-javascript",
+        title: "Async JavaScript",
+        category: "Runtime behavior",
+        description: "Understand how JavaScript handles delayed work, API calls, and errors without blocking the main thread.",
+        checklist: ["callbacks", "promises", "async / await", "event loop", "microtasks vs macrotasks", "error handling"],
+        reflection: "How would you explain why async/await is easier to read than promise chains?",
+        project: "Fetch data from an API and handle loading, success, and error states."
+      },
+      {
+        id: "typescript-basics",
+        title: "TypeScript Basics",
+        category: "Typed JavaScript",
+        description: "Learn how types make web apps easier to refactor, reason about, and explain during interviews.",
+        checklist: ["primitive types", "arrays and objects", "interfaces", "type aliases", "union types", "function types"],
+        reflection: "Where does TypeScript help catch bugs before runtime in a real application?",
+        project: "Add types to an API response, form model, and reusable component props."
+      },
+      {
+        id: "react-fundamentals",
+        title: "React Fundamentals",
+        category: "Frontend framework",
+        description: "Practice the core React concepts that appear in junior frontend and fullstack interviews.",
+        checklist: ["props vs state", "useState", "useEffect", "controlled components", "rendering and re-rendering", "key prop", "lifting state up"],
+        reflection: "Can you explain what causes a component to re-render and why the key prop matters?",
+        project: "Build a form-driven React feature with controlled inputs and derived UI state."
+      },
+      {
+        id: "frontend-patterns",
+        title: "Frontend App Patterns",
+        category: "Application design",
+        description: "Connect React fundamentals to the patterns used in production-style frontend apps.",
+        checklist: ["component composition", "shared state", "routing", "forms", "loading states", "error states", "accessibility basics"],
+        reflection: "How do you decide whether state should live locally, in a parent, or in a shared store?",
+        project: "Create a small multi-screen frontend with routing, form validation, and empty/error states."
+      },
+      {
+        id: "backend-apis",
+        title: "Backend APIs",
+        category: "Server fundamentals",
+        description: "Learn the request/response flow and how backend endpoints are structured, validated, and debugged.",
+        checklist: ["request/response cycle", "Express routing", "middleware", "status codes", "REST API design", "validation", "error handling"],
+        reflection: "Can you describe what happens from the moment a request hits an Express route to the moment a response is sent?",
+        project: "Build CRUD endpoints with validation, clear status codes, and centralized error handling."
+      },
+      {
+        id: "databases",
+        title: "Databases",
+        category: "Data modeling",
+        description: "Understand the basic data concepts needed to design, query, and explain app persistence.",
+        checklist: ["SQL vs NoSQL", "tables vs collections", "primary key", "foreign key", "indexes", "basic data modeling"],
+        reflection: "How would you explain the difference between modeling users and posts in SQL versus a document database?",
+        project: "Design a simple schema for users, projects, and notes, then connect it to an API."
+      },
+      {
+        id: "auth-security",
+        title: "Auth & Security",
+        category: "Authentication",
+        description: "Practice the security concepts junior developers are expected to explain clearly and responsibly.",
+        checklist: ["authentication vs authorization", "cookies", "sessions", "JWT", "password hashing", "CORS", "XSS and CSRF basics"],
+        reflection: "What tradeoffs would you mention when comparing session auth and JWT auth?",
+        project: "Add login, protected routes, password hashing, and secure cookie or token handling to a project."
+      },
+      {
+        id: "deployment",
+        title: "Deployment",
+        category: "Production basics",
+        description: "Learn what changes when an app leaves your laptop and runs in a hosted environment.",
+        checklist: ["environment variables", "build process", "hosting frontend", "hosting backend", "connecting frontend/backend in production"],
+        reflection: "What can go wrong when connecting a deployed frontend to a deployed backend?",
+        project: "Deploy a fullstack app and document environment variables, build steps, and production URLs."
+      },
+      {
+        id: "interview-readiness",
+        title: "Interview Readiness",
+        category: "Communication",
+        description: "Turn technical knowledge into clear interview answers with structure, examples, and tradeoffs.",
+        checklist: ["explain concepts clearly", "definition, example, why it matters, tradeoff", "fullstack request flow", "project explanation practice"],
+        reflection: "Can you answer a concept by giving the definition, one example, why it matters, and one tradeoff?",
+        project: "Record or write three polished explanations for your strongest project features."
+      },
+      {
+        id: "portfolio-project",
+        title: "Portfolio Project",
+        category: "Proof of skill",
+        description: "Package your learning into a project you can explain confidently in interviews.",
+        checklist: ["choose project scope", "build MVP", "add auth", "add database", "deploy", "write README", "prepare interview talking points"],
+        reflection: "What problem does your project solve, and what technical decisions are worth discussing?",
+        project: "Ship a deployed MVP with auth, database persistence, README, and interview talking points."
+      }
+    ];
+
+    const storageKey = "junior-web-dev-roadmap-state-v1";
+    const statusWeights = {
+      "not-started": 0,
+      "learning": 0.35,
+      "practiced": 0.7,
+      "confident": 1
+    };
+    const statusLabels = {
+      "not-started": "Not Started",
+      "learning": "Learning",
+      "practiced": "Practiced",
+      "confident": "Confident"
+    };
+
+    let state = loadState();
+    let activeId = state.activeId || roadmapData[1].id;
+
+    const roadmapEl = document.getElementById("roadmap");
+    const detailPanel = document.getElementById("detailPanel");
+    const panelCategory = document.getElementById("panelCategory");
+    const panelTitle = document.getElementById("panelTitle");
+    const panelDescription = document.getElementById("panelDescription");
+    const statusSelect = document.getElementById("statusSelect");
+    const checklistEl = document.getElementById("checklist");
+    const reflectionPrompt = document.getElementById("reflectionPrompt");
+    const projectTask = document.getElementById("projectTask");
+    const notesEl = document.getElementById("notes");
+    const saveState = document.getElementById("saveState");
+    const resetNode = document.getElementById("resetNode");
+    const overallPercent = document.getElementById("overallPercent");
+    const overallFill = document.getElementById("overallFill");
+    const todayFocus = document.getElementById("todayFocus");
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey)) || { nodes: {} };
+      } catch {
+        return { nodes: {} };
+      }
+    }
+
+    function saveState() {
+      state.activeId = activeId;
+      localStorage.setItem(storageKey, JSON.stringify(state));
+      saveStateLabel("Saved locally");
+    }
+
+    function saveStateLabel(text) {
+      saveState.textContent = text;
+      window.clearTimeout(saveStateLabel.timer);
+      saveStateLabel.timer = window.setTimeout(() => {
+        saveState.textContent = "Saved locally";
+      }, 1200);
+    }
+
+    function getNodeState(id) {
+      if (!state.nodes[id]) {
+        const node = roadmapData.find((item) => item.id === id);
+        state.nodes[id] = {
+          status: "not-started",
+          checked: Array(node.checklist.length).fill(false),
+          notes: ""
+        };
+      }
+      return state.nodes[id];
+    }
+
+    function nodeProgress(node) {
+      const nodeState = getNodeState(node.id);
+      const checkedCount = nodeState.checked.filter(Boolean).length;
+      const checklistScore = node.checklist.length ? checkedCount / node.checklist.length : 0;
+      const statusScore = statusWeights[nodeState.status] || 0;
+      return Math.round(((statusScore * 0.42) + (checklistScore * 0.58)) * 100);
+    }
+
+    function renderRoadmap() {
+      roadmapEl.innerHTML = roadmapData.map((node, index) => {
+        const progress = nodeProgress(node);
+        const nodeState = getNodeState(node.id);
+        const statusClass = `status-${nodeState.status}`;
+        const isActive = node.id === activeId;
+        const isComplete = progress === 100;
+        return `
+          <div class="roadmap-node ${isActive ? "active" : ""} ${isComplete ? "completed" : ""}">
+            <button class="node-card ${isActive ? "active" : ""}" data-node-id="${node.id}" type="button">
+              <div class="node-top">
+                <h3>${node.title}</h3>
+                <span class="status-pill ${statusClass}">${statusLabels[nodeState.status]}</span>
+              </div>
+              <p>${node.description}</p>
+              <div class="node-foot">
+                <div class="mini-progress"><span style="width: ${progress}%"></span></div>
+                <span class="status-pill">${progress}%</span>
+              </div>
+            </button>
+            <div class="node-dot">${String(index + 1).padStart(2, "0")}</div>
+          </div>
+        `;
+      }).join("");
+
+      document.querySelectorAll("[data-node-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeId = button.dataset.nodeId;
+          detailPanel.classList.add("open");
+          render();
+        });
+      });
+    }
+
+    function renderPanel() {
+      const node = roadmapData.find((item) => item.id === activeId);
+      const nodeState = getNodeState(activeId);
+
+      panelCategory.textContent = node.category;
+      panelTitle.textContent = node.title;
+      panelDescription.textContent = node.description;
+      statusSelect.value = nodeState.status;
+      reflectionPrompt.textContent = node.reflection;
+      projectTask.textContent = node.project;
+      notesEl.value = nodeState.notes || "";
+
+      checklistEl.innerHTML = node.checklist.map((item, index) => `
+        <label class="check-item">
+          <input type="checkbox" data-check-index="${index}" ${nodeState.checked[index] ? "checked" : ""} />
+          <span>${item}</span>
+        </label>
+      `).join("");
+
+      document.querySelectorAll("[data-check-index]").forEach((input) => {
+        input.addEventListener("change", () => {
+          nodeState.checked[Number(input.dataset.checkIndex)] = input.checked;
+          saveState();
+          render();
+        });
+      });
+    }
+
+    function updateOverallProgress() {
+      const total = roadmapData.reduce((sum, node) => sum + nodeProgress(node), 0);
+      const percent = Math.round(total / roadmapData.length);
+      overallPercent.textContent = `${percent}%`;
+      overallFill.style.width = `${percent}%`;
+
+      const nextNode = roadmapData.find((node) => nodeProgress(node) < 100) || roadmapData[roadmapData.length - 1];
+      todayFocus.textContent = `Today's focus: ${nextNode.title}`;
+    }
+
+    function render() {
+      renderRoadmap();
+      renderPanel();
+      updateOverallProgress();
+      saveState();
+    }
+
+    statusSelect.addEventListener("change", () => {
+      getNodeState(activeId).status = statusSelect.value;
+      saveState();
+      render();
+    });
+
+    notesEl.addEventListener("input", () => {
+      getNodeState(activeId).notes = notesEl.value;
+      saveStateLabel("Saving...");
+      saveState();
+    });
+
+    resetNode.addEventListener("click", () => {
+      const node = roadmapData.find((item) => item.id === activeId);
+      state.nodes[activeId] = {
+        status: "not-started",
+        checked: Array(node.checklist.length).fill(false),
+        notes: ""
+      };
+      saveState();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Trainer — App Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070910;
+      --bg-soft: #0d1019;
+      --surface: rgba(18, 22, 34, 0.78);
+      --surface-strong: rgba(24, 29, 44, 0.92);
+      --surface-muted: rgba(255, 255, 255, 0.035);
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.14);
+      --text: #f6f8ff;
+      --text-soft: #abb4c8;
+      --text-muted: #707a91;
+      --blue: #6d95ff;
+      --violet: #9b72ff;
+      --cyan: #5ee7df;
+      --green: #5ce2a2;
+      --amber: #f2bd62;
+      --red: #ff7777;
+      --shadow: 0 24px 90px rgba(0, 0, 0, 0.45);
+      --radius-xl: 34px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --font: "Geist", ui-sans-serif, system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% -10%, rgba(109, 149, 255, 0.2), transparent 30%),
+        radial-gradient(circle at 90% 12%, rgba(155, 114, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 65% 82%, rgba(94, 231, 223, 0.08), transparent 32%),
+        linear-gradient(180deg, #080a12 0%, #070910 48%, #05060a 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(circle at 50% 8%, black, transparent 72%);
+      opacity: 0.28;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 238px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 24px 16px;
+      border-right: 1px solid var(--line);
+      background: rgba(7, 9, 16, 0.46);
+      backdrop-filter: blur(24px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 2px 8px 28px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      background:
+        linear-gradient(135deg, rgba(109, 149, 255, 0.72), rgba(155, 114, 255, 0.68)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+      box-shadow: 0 12px 28px rgba(109, 149, 255, 0.16);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .brand h1 {
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin-top: 2px;
+      color: rgba(112, 122, 145, 0.82);
+      font-size: 11px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      color: rgba(171, 180, 200, 0.78);
+      font-size: 14px;
+      transition: 180ms ease;
+    }
+
+    .nav a span {
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      border-color: var(--line);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .sidebar-note {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .sidebar-note .label {
+      color: rgba(94, 231, 223, 0.76);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-note p {
+      margin-top: 9px;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .main {
+      padding: 30px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      max-width: 1180px;
+      margin: 0 auto 18px;
+    }
+
+    .topbar-copy p {
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .topbar-copy h2 {
+      margin-top: 4px;
+      color: var(--text-soft);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ghost-button,
+    .primary-button,
+    .soft-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .primary-button {
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, var(--blue), var(--violet));
+      box-shadow: 0 16px 40px rgba(109, 149, 255, 0.26);
+      font-weight: 650;
+    }
+
+    .ghost-button,
+    .soft-button {
+      border: 1px solid var(--line);
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .soft-button {
+      min-height: 38px;
+      padding: 0 13px;
+      font-size: 13px;
+    }
+
+    .primary-button:hover,
+    .ghost-button:hover,
+    .soft-button:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+    }
+
+    .primary-button:hover {
+      box-shadow: 0 20px 52px rgba(109, 149, 255, 0.34);
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .command-center {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 136px);
+      padding: clamp(34px, 8vw, 82px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(109, 149, 255, 0.13), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.028)),
+        rgba(13, 16, 25, 0.9);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .command-center::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 22%, rgba(155, 114, 255, 0.12), transparent 30%),
+        linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.045), transparent);
+    }
+
+    .command-copy {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      width: min(100%, 720px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(94, 231, 223, 0.75);
+    }
+
+    .command-copy h3 {
+      max-width: 620px;
+      margin-top: 22px;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700;
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .focus-statement {
+      max-width: 660px;
+      margin-top: 22px;
+      color: var(--text-soft);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.55;
+      letter-spacing: -0.015em;
+    }
+
+    .readiness-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.035);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .readiness-inline strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .rep-note {
+      margin-top: 18px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(22px);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 22px 0;
+    }
+
+    .panel-header h3 {
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .panel-header p {
+      margin-top: 5px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .topic-list,
+    .history-list {
+      display: grid;
+      gap: 4px;
+      padding: 18px;
+    }
+
+    .topic-row,
+    .history-row,
+    .concept-row {
+      display: grid;
+      gap: 4px;
+      padding: 14px;
+      border: 1px solid transparent;
+      border-radius: 16px;
+      transition: 180ms ease;
+    }
+
+    .topic-row:hover,
+    .history-row:hover,
+    .concept-row:hover {
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .row-title {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .row-meta {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .pill.weak {
+      color: var(--red);
+      background: rgba(255, 119, 119, 0.09);
+    }
+
+    .pill.learning {
+      color: var(--amber);
+      background: rgba(242, 189, 98, 0.09);
+    }
+
+    .pill.strong {
+      color: var(--green);
+      background: rgba(92, 226, 162, 0.09);
+    }
+
+    .view {
+      display: none;
+      animation: viewIn 420ms ease both;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes viewIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .practice-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 24px;
+    }
+
+    .question-panel {
+      padding: 34px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 24px;
+    }
+
+    .question-panel h3 {
+      max-width: 760px;
+      font-size: clamp(30px, 5vw, 52px);
+      font-weight: 680;
+      letter-spacing: -0.065em;
+      line-height: 1.04;
+    }
+
+    .question-panel .prompt-help {
+      max-width: 700px;
+      margin-top: 18px;
+      color: var(--text-soft);
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .answer-box {
+      width: 100%;
+      min-height: 210px;
+      margin-top: 28px;
+      padding: 18px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      outline: none;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.2);
+      line-height: 1.6;
+      transition: 180ms ease;
+    }
+
+    .answer-box:focus {
+      border-color: rgba(109, 149, 255, 0.5);
+      box-shadow: 0 0 0 4px rgba(109, 149, 255, 0.1);
+    }
+
+    .review-panel {
+      padding: 22px;
+    }
+
+    .review-block {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .review-block:last-child {
+      border-bottom: 0;
+    }
+
+    .review-block h4 {
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .review-block p,
+    .review-block li {
+      margin-top: 8px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .review-block ul {
+      padding-left: 18px;
+    }
+
+    .score-scale {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .score-scale button {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .score-scale button.active {
+      color: #fff;
+      border-color: rgba(109, 149, 255, 0.6);
+      background: rgba(109, 149, 255, 0.18);
+    }
+
+    .library-layout {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .search-panel {
+      padding: 18px;
+    }
+
+    .search {
+      width: 100%;
+      height: 48px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      outline: none;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .category-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 18px;
+    }
+
+    .category {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border-radius: 13px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .category.active,
+    .category:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .concept-section {
+      padding: 22px;
+    }
+
+    .concept-section + .concept-section {
+      border-top: 1px solid var(--line);
+    }
+
+    .concept-section h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .concept-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .history-timeline {
+      padding: 12px 24px 24px;
+    }
+
+    .timeline-day {
+      position: relative;
+      display: grid;
+      gap: 12px;
+      padding-left: 28px;
+    }
+
+    .timeline-day + .timeline-day {
+      margin-top: 26px;
+    }
+
+    .timeline-day::before {
+      content: "";
+      position: absolute;
+      top: 34px;
+      bottom: -26px;
+      left: 7px;
+      width: 1px;
+      background: var(--line);
+    }
+
+    .timeline-day:last-child::before {
+      display: none;
+    }
+
+    .day-label {
+      position: relative;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .day-label::before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: -26px;
+      width: 13px;
+      height: 13px;
+      border: 2px solid var(--blue);
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: 0 0 0 6px rgba(109, 149, 255, 0.1);
+    }
+
+    .timeline-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .timeline-card h3 {
+      font-size: 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .timeline-card p {
+      margin-top: 8px;
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .timeline-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 1040px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .sidebar-note {
+        display: none;
+      }
+
+      .nav {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .practice-stage,
+      .library-layout,
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .main {
+        padding: 20px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-actions,
+      .action-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .nav {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .command-center,
+      .question-panel {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#home" data-view-link="home">
+        <div class="brand-mark">IT</div>
+        <div>
+          <h1>Interview Trainer</h1>
+          <p>Frontend · Backend · Fullstack</p>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <a class="active" href="#home" data-view-link="home">Home <span>01</span></a>
+        <a href="#practice" data-view-link="practice">Practice <span>02</span></a>
+        <a href="#library" data-view-link="library">Concepts <span>03</span></a>
+        <a href="#history" data-view-link="history">History <span>04</span></a>
+      </nav>
+
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-copy">
+          <p>Interview Trainer</p>
+          <h2>Practice workspace</h2>
+        </div>
+        <div class="top-actions">
+          <button class="ghost-button">⌘K Search</button>
+        </div>
+      </header>
+
+      <section id="home" class="page view active" aria-label="Home dashboard">
+        <div class="command-center">
+          <div class="command-copy">
+            <div class="eyebrow">Good afternoon, Nicholas</div>
+            <h3>Ready for your next rep?</h3>
+            <p class="focus-statement">Today’s focus: Auth flow, sessions, JWTs, and protected routes.</p>
+            <div class="action-row">
+              <button class="primary-button" data-view-button="practice">Start Practice</button>
+            </div>
+            <div class="readiness-inline" aria-label="Readiness score">
+              <span>Readiness:</span>
+              <strong>72%</strong>
+            </div>
+            <p class="rep-note">Answer, compare, score, and save one reusable note.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="practice" class="page view" aria-label="Practice mode">
+        <div class="practice-stage">
+          <section class="panel question-panel">
+            <div class="meta-row">
+              <span class="pill learning">Backend</span>
+              <span class="pill">Auth/Security</span>
+              <span class="pill">Entry Level</span>
+            </div>
+            <h3>How would you explain the difference between session-based authentication and JWT authentication?</h3>
+            <p class="prompt-help">
+              Answer as if you are speaking to an interviewer. Start with the core difference, then mention storage, validation, tradeoffs, and when you might choose each approach.
+            </p>
+            <textarea class="answer-box" placeholder="Type your answer here..."></textarea>
+            <div class="action-row">
+              <button class="primary-button">Submit Answer</button>
+              <button class="ghost-button">Show Hint</button>
+              <button class="ghost-button">Skip</button>
+            </div>
+          </section>
+
+          <aside class="panel review-panel" aria-label="Post submission review">
+            <div class="eyebrow">After submission</div>
+            <div class="review-block">
+              <h4>Model Answer</h4>
+              <p>Sessions store authentication state on the server and send a session id to the client. JWTs store signed claims in a token that the server can verify without a session lookup.</p>
+            </div>
+            <div class="review-block">
+              <h4>Key Checklist</h4>
+              <ul>
+                <li>Explains server-side state vs signed token claims.</li>
+                <li>Mentions cookies, storage, expiration, and refresh.</li>
+                <li>Names tradeoffs around revocation and scaling.</li>
+              </ul>
+            </div>
+            <div class="review-block">
+              <h4>Self Score</h4>
+              <div class="score-scale">
+                <button>1</button>
+                <button>2</button>
+                <button class="active">3</button>
+                <button>4</button>
+                <button>5</button>
+              </div>
+            </div>
+            <div class="review-block">
+              <h4>Note To Remember</h4>
+              <p>Always mention revocation: sessions are easier to invalidate immediately, while JWTs need expiration, blocklists, or token rotation.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="library" class="page view" aria-label="Concept library">
+        <div class="library-layout">
+          <aside class="panel search-panel">
+            <input class="search" value="" placeholder="Search concepts..." />
+            <div class="category-list">
+              <a class="category active" href="#">JavaScript <span>12</span></a>
+              <a class="category" href="#">React <span>14</span></a>
+              <a class="category" href="#">Backend <span>10</span></a>
+              <a class="category" href="#">Database <span>8</span></a>
+              <a class="category" href="#">Auth/Security <span>7</span></a>
+              <a class="category" href="#">Fullstack <span>9</span></a>
+            </div>
+          </aside>
+
+          <section class="panel">
+            <div class="concept-section">
+              <h3>JavaScript</h3>
+              <div class="concept-row">
+                <div>
+                  <div class="row-title">Closures and lexical scope</div>
+                  <div class="row-meta">Explain how functions remember outer variables.</div>
+                </div>
+                <span class="pill strong">Strong</span>
+              </div>
+              <div class="concept-row">
+                <div>
+                  <div class="row-title">Promises and async/await</div>
+                  <div class="row-meta">Describe async flow, error handling, and sequencing.</div>
+                </div>
+                <span class="pill learning">Learning</span>
+              </div>
+            </div>
+
+            <div class="concept-section">
+              <h3>React</h3>
+              <div class="concept-row">
+                <div>
+                  <div class="row-title">State updates and rendering</div>
+                  <div class="row-meta">Know batching, rerenders, props, and derived state.</div>
+                </div>
+                <span class="pill strong">Strong</span>
+              </div>
+              <div class="concept-row">
+                <div>
+                  <div class="row-title">Effect dependencies and cleanup</div>
+                  <div class="row-meta">Explain when effects run and how cleanup prevents bugs.</div>
+                </div>
+                <span class="pill learning">Learning</span>
+              </div>
+            </div>
+
+            <div class="concept-section">
+              <h3>Backend, Database, Auth</h3>
+              <div class="concept-row">
+                <div>
+                  <div class="row-title">REST API request lifecycle</div>
+                  <div class="row-meta">Route, validate, authorize, query, respond, handle errors.</div>
+                </div>
+                <span class="pill learning">Learning</span>
+              </div>
+              <div class="concept-row">
+                <div>
+                  <div class="row-title">JWT vs sessions</div>
+                  <div class="row-meta">Compare storage, validation, revocation, and security tradeoffs.</div>
+                </div>
+                <span class="pill weak">Weak</span>
+              </div>
+              <div class="concept-row">
+                <div>
+                  <div class="row-title">SQL indexes</div>
+                  <div class="row-meta">Explain how indexes speed up reads and affect writes.</div>
+                </div>
+                <span class="pill weak">Weak</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="history" class="page view" aria-label="Review history">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Review History</h3>
+              <p>Previous attempts shown as a calm timeline, not a metrics dashboard.</p>
+            </div>
+            <button class="soft-button">Filter</button>
+          </div>
+
+          <div class="history-timeline">
+            <div class="timeline-day">
+              <div class="day-label">Today</div>
+              <article class="timeline-card">
+                <h3>JWT vs session auth</h3>
+                <p>Question: How would you explain the difference between session-based authentication and JWT authentication?</p>
+                <p>Note: Mention token revocation earlier and give one real product example.</p>
+                <div class="timeline-meta">
+                  <span class="pill weak">Auth/Security</span>
+                  <span class="pill learning">Score 3/5</span>
+                  <span class="pill">4:02 PM</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="timeline-day">
+              <div class="day-label">Yesterday</div>
+              <article class="timeline-card">
+                <h3>React effect cleanup</h3>
+                <p>Question: Why do some effects need cleanup functions?</p>
+                <p>Note: Strong answer. Add examples like subscriptions, timers, and fetch cancellation.</p>
+                <div class="timeline-meta">
+                  <span class="pill learning">React</span>
+                  <span class="pill strong">Score 4/5</span>
+                  <span class="pill">8:41 PM</span>
+                </div>
+              </article>
+
+              <article class="timeline-card">
+                <h3>SQL indexing basics</h3>
+                <p>Question: What is an index, and why can it make a query faster?</p>
+                <p>Note: Explain the lookup structure more simply before mentioning write overhead.</p>
+                <div class="timeline-meta">
+                  <span class="pill weak">Database</span>
+                  <span class="pill learning">Score 2/5</span>
+                  <span class="pill">7:18 PM</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="timeline-day">
+              <div class="day-label">Apr 25</div>
+              <article class="timeline-card">
+                <h3>Closures</h3>
+                <p>Question: What is a closure in JavaScript?</p>
+                <p>Note: Clear explanation with a practical example. Keep this answer structure.</p>
+                <div class="timeline-meta">
+                  <span class="pill strong">JavaScript</span>
+                  <span class="pill strong">Score 5/5</span>
+                  <span class="pill">9:12 PM</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll("[data-view-link]");
+    const buttons = document.querySelectorAll("[data-view-button]");
+    const views = document.querySelectorAll(".view");
+
+    function setView(name) {
+      views.forEach((view) => view.classList.toggle("active", view.id === name));
+      links.forEach((link) => link.classList.toggle("active", link.dataset.viewLink === name));
+      window.location.hash = name;
+    }
+
+    links.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        setView(link.dataset.viewLink);
+      });
+    });
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => setView(button.dataset.viewButton));
+    });
+
+    const initialView = window.location.hash.replace("#", "");
+    if (initialView) {
+      setView(initialView);
+    }
+  </script>
+</body>
+</html>
