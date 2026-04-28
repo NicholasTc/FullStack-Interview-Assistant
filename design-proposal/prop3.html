@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stellar Path — Fullstack Learning Galaxy (Prototype)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-0: #03050d;
+      --bg-1: #06091a;
+      --panel: rgba(10, 14, 28, 0.78);
+      --panel-strong: rgba(13, 18, 36, 0.94);
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #e8edff;
+      --muted: #8893b3;
+      --faint: #5a6483;
+
+      /* region accents */
+      --c-foundation: #f3c76b; /* amber */
+      --c-frontend:   #5ee7df; /* cyan */
+      --c-backend:    #9b72ff; /* violet */
+      --c-data:       #60e6a8; /* green */
+      --c-devops:     #ff7a9c; /* rose */
+
+      --font: "Inter", ui-sans-serif, system-ui, sans-serif;
+      --display: "Orbitron", "Inter", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--bg-0);
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    /* deep-space background tints */
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 18% 28%, rgba(60, 80, 160, 0.10), transparent 60%),
+        radial-gradient(ellipse 70% 55% at 82% 70%, rgba(120, 50, 110, 0.09), transparent 60%),
+        radial-gradient(ellipse 50% 80% at 50% 110%, rgba(40, 60, 130, 0.08), transparent 60%);
+    }
+
+    #starfield {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #map {
+      position: fixed; inset: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1;
+      cursor: grab;
+      touch-action: none;
+    }
+    #map.is-panning { cursor: grabbing; }
+
+    /* ------- map graphics ------- */
+    .edge {
+      fill: none;
+      stroke: rgba(180, 200, 240, 0.18);
+      stroke-width: 1.1;
+      transition: stroke 200ms, stroke-width 200ms, opacity 200ms;
+      pointer-events: none;
+    }
+    .edge.lit {
+      stroke: rgba(180, 220, 255, 0.55);
+      stroke-width: 1.3;
+    }
+    .edge.highlight {
+      stroke: rgba(255, 255, 255, 0.85);
+      stroke-width: 1.6;
+    }
+    .edge.dim { opacity: 0.18; }
+
+    .node {
+      cursor: pointer;
+    }
+    .node-halo {
+      transition: opacity 280ms ease, r 280ms ease;
+      pointer-events: none;
+    }
+    .node-core {
+      transition: r 200ms ease, filter 200ms ease;
+    }
+    .node-ring {
+      fill: none;
+      stroke-width: 1.2;
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: opacity 200ms ease;
+      pointer-events: none;
+    }
+    .node.is-learning .node-ring {
+      opacity: 0.85;
+      animation: ringPulse 2.6s ease-in-out infinite;
+    }
+    .node.is-selected .node-ring {
+      opacity: 1;
+      stroke-width: 1.6;
+    }
+    @keyframes ringPulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50%      { transform: scale(1.18); opacity: 0.25; }
+    }
+
+    .node-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      fill: var(--muted);
+      text-anchor: middle;
+      paint-order: stroke;
+      stroke: rgba(3, 5, 13, 0.85);
+      stroke-width: 3px;
+      pointer-events: none;
+      transition: fill 200ms ease, opacity 200ms ease;
+    }
+    .node.is-mastered + .node-label,
+    .node.is-mastered .node-label { fill: var(--text); }
+
+    .region-label {
+      font-family: var(--display);
+      font-size: 13px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      text-anchor: middle;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    /* ------- topbar ------- */
+    .topbar {
+      position: fixed;
+      top: 18px; left: 18px; right: 18px;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+    .brand .mark {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: radial-gradient(circle at 30% 30%, #ffd7a0, #ff7a7a 45%, #6d4cff 100%);
+      box-shadow: 0 0 18px rgba(255, 130, 170, 0.45);
+    }
+    .brand .text { line-height: 1.1; }
+    .brand .title {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .brand .subtitle {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .search-wrap {
+      position: relative;
+      max-width: 360px;
+      width: 100%;
+      justify-self: center;
+    }
+    .search {
+      width: 100%;
+      padding: 11px 14px 11px 40px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13.5px;
+      outline: none;
+      backdrop-filter: blur(14px);
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .search:focus {
+      border-color: rgba(110, 160, 255, 0.5);
+      box-shadow: 0 0 0 3px rgba(80, 130, 230, 0.15);
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 14px; height: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search-results {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0; right: 0;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-height: 280px;
+      overflow-y: auto;
+      backdrop-filter: blur(14px);
+      display: none;
+    }
+    .search-results.open { display: block; }
+    .search-results .item {
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      border-bottom: 1px solid var(--line);
+    }
+    .search-results .item:last-child { border-bottom: none; }
+    .search-results .item:hover { background: rgba(110, 150, 230, 0.08); }
+    .search-results .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .search-results .meta {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--faint);
+      margin-left: auto;
+      letter-spacing: 0.08em;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+    .progress {
+      display: flex; align-items: center; gap: 10px;
+      padding: 4px 12px;
+      border-right: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .progress strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .progress-bar {
+      width: 80px; height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-bar > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f3c76b, #5ee7df, #9b72ff);
+      box-shadow: 0 0 12px rgba(150, 200, 255, 0.5);
+      transition: width 360ms ease;
+    }
+
+    .icon-btn {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      display: grid; place-items: center;
+      transition: background 140ms, color 140ms, border-color 140ms;
+    }
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border-color: var(--line);
+    }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    /* ------- legend ------- */
+    .legend {
+      position: fixed;
+      bottom: 22px; left: 22px;
+      z-index: 5;
+      padding: 14px 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      min-width: 200px;
+    }
+    .legend h4 {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--faint);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .legend ul { list-style: none; display: grid; gap: 7px; }
+    .legend li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .legend .dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    /* ------- minimap ------- */
+    .minimap {
+      position: fixed;
+      bottom: 22px; right: 22px;
+      z-index: 5;
+      width: 200px; height: 130px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .minimap svg { display: block; width: 100%; height: 100%; }
+    .minimap .viewport {
+      fill: rgba(110, 160, 255, 0.12);
+      stroke: rgba(150, 200, 255, 0.7);
+      stroke-width: 1;
+    }
+    .minimap .mini-node { stroke: none; }
+    .minimap .mini-edge { stroke: rgba(180, 200, 240, 0.18); stroke-width: 0.5; }
+
+    /* ------- detail panel ------- */
+    .panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: min(420px, 92vw);
+      height: 100vh;
+      z-index: 20;
+      background: var(--panel-strong);
+      border-left: 1px solid var(--line);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+      transform: translateX(110%);
+      transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      flex-direction: column;
+      user-select: text;
+    }
+    .panel.open { transform: translateX(0); }
+
+    .panel-header {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+    .panel-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      display: grid; place-items: center;
+      transition: background 140ms, color 140ms;
+    }
+    .panel-close:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+    .panel-region {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .panel-region .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .panel-title {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .panel-coords {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      color: var(--faint);
+    }
+
+    .panel-body {
+      padding: 20px 24px 24px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex; flex-direction: column; gap: 22px;
+    }
+    .panel-body::-webkit-scrollbar { width: 8px; }
+    .panel-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .panel-summary { font-size: 14px; line-height: 1.6; color: #c9d3ee; }
+
+    .topic-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .topic-list li {
+      list-style: none;
+      padding: 5px 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 11.5px;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: 0.04em;
+    }
+
+    .resource-list { display: grid; gap: 8px; }
+    .resource-list a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 140ms, border-color 140ms, transform 140ms;
+    }
+    .resource-list a:hover {
+      background: rgba(110, 160, 255, 0.08);
+      border-color: rgba(110, 160, 255, 0.35);
+      transform: translateX(2px);
+    }
+    .resource-list .res-icon {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: grid; place-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      flex-shrink: 0;
+    }
+    .resource-list .res-icon svg { width: 14px; height: 14px; color: var(--muted); }
+    .resource-list .res-text {
+      display: flex; flex-direction: column; min-width: 0;
+    }
+    .resource-list .res-host {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+    }
+
+    .prereq-list { display: grid; gap: 6px; }
+    .prereq-list .row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: background 140ms, border-color 140ms;
+    }
+    .prereq-list .row:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--line-strong);
+    }
+    .prereq-list .row .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .prereq-list .row .status {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--faint);
+      text-transform: uppercase;
+    }
+
+    /* segmented status control */
+    .status-control {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .status-control button {
+      padding: 9px 10px;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 9px;
+      transition: background 140ms, color 140ms;
+    }
+    .status-control button:hover { color: var(--text); }
+    .status-control button.is-active {
+      background: rgba(110, 160, 255, 0.16);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(110, 160, 255, 0.3);
+    }
+    .status-control[data-state="mastered"] button.is-active {
+      background: rgba(94, 231, 223, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(94, 231, 223, 0.45);
+    }
+
+    /* ------- hint ------- */
+    .hint {
+      position: fixed;
+      bottom: 22px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      padding: 9px 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      transition: opacity 400ms ease;
+    }
+    .hint.hidden { opacity: 0; pointer-events: none; }
+    .hint kbd {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--text);
+    }
+
+    /* ------- responsive ------- */
+    @media (max-width: 720px) {
+      .search-wrap { display: none; }
+      .legend { display: none; }
+      .minimap { width: 140px; height: 96px; }
+      .topbar { grid-template-columns: auto 1fr; }
+      .progress-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <svg id="map" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1920 1200">
+    <defs>
+      <!-- region halo gradients -->
+      <radialGradient id="halo-foundation"><stop offset="0%" stop-color="#f3c76b" stop-opacity="0.85"/><stop offset="60%" stop-color="#f3c76b" stop-opacity="0.10"/><stop offset="100%" stop-color="#f3c76b" stop-opacity="0"/></radialGradient>
+      <radialGradient id="halo-frontend"><stop offset="0%" stop-color="#5ee7df" stop-opacity="0.85"/><stop offset="60%" stop-color="#5ee7df" stop-opacity="0.10"/><stop offset="100%" stop-color="#5ee7df" stop-opacity="0"/></radialGradient>
+      <radialGradient id="halo-backend"><stop offset="0%" stop-color="#9b72ff" stop-opacity="0.85"/><stop offset="60%" stop-color="#9b72ff" stop-opacity="0.10"/><stop offset="100%" stop-color="#9b72ff" stop-opacity="0"/></radialGradient>
+      <radialGradient id="halo-data"><stop offset="0%" stop-color="#60e6a8" stop-opacity="0.85"/><stop offset="60%" stop-color="#60e6a8" stop-opacity="0.10"/><stop offset="100%" stop-color="#60e6a8" stop-opacity="0"/></radialGradient>
+      <radialGradient id="halo-devops"><stop offset="0%" stop-color="#ff7a9c" stop-opacity="0.85"/><stop offset="60%" stop-color="#ff7a9c" stop-opacity="0.10"/><stop offset="100%" stop-color="#ff7a9c" stop-opacity="0"/></radialGradient>
+
+      <filter id="glow-soft" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="3" result="b"/>
+        <feMerge>
+          <feMergeNode in="b"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+      <filter id="glow-strong" x="-150%" y="-150%" width="400%" height="400%">
+        <feGaussianBlur stdDeviation="6" result="b"/>
+        <feMerge>
+          <feMergeNode in="b"/>
+          <feMergeNode in="b"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+
+    <g id="world">
+      <g id="region-labels"></g>
+      <g id="edges-layer"></g>
+      <g id="nodes-layer"></g>
+    </g>
+  </svg>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark"></div>
+      <div class="text">
+        <div class="title">Stellar Path</div>
+        <div class="subtitle">FULLSTACK · Sector A-1</div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search" class="search" placeholder="Locate concept by name…" autocomplete="off" />
+      <div id="search-results" class="search-results"></div>
+    </div>
+
+    <div class="controls">
+      <div class="progress">
+        <span><strong id="prog-num">0</strong> / <span id="prog-total">15</span> mastered</span>
+        <div class="progress-bar"><i id="prog-fill"></i></div>
+      </div>
+      <button class="icon-btn" id="btn-zoom-out" title="Zoom out (−)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-zoom-in" title="Zoom in (+)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-recenter" title="Recenter (0)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-reset" title="Reset progress">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="legend" aria-label="Region legend">
+    <h4>Constellation regions</h4>
+    <ul>
+      <li><span class="dot" style="background:#f3c76b;color:#f3c76b"></span> Foundation</li>
+      <li><span class="dot" style="background:#5ee7df;color:#5ee7df"></span> Frontend</li>
+      <li><span class="dot" style="background:#9b72ff;color:#9b72ff"></span> Backend</li>
+      <li><span class="dot" style="background:#60e6a8;color:#60e6a8"></span> Data</li>
+      <li><span class="dot" style="background:#ff7a9c;color:#ff7a9c"></span> DevOps &amp; Beyond</li>
+    </ul>
+  </aside>
+
+  <aside class="minimap" aria-label="Galaxy minimap">
+    <svg id="minimap-svg" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid meet"></svg>
+  </aside>
+
+  <div id="hint" class="hint">
+    <span><kbd>Drag</kbd> to pan</span>
+    <span><kbd>Scroll</kbd> to zoom</span>
+    <span><kbd>Click</kbd> a star</span>
+  </div>
+
+  <aside id="panel" class="panel" aria-hidden="true">
+    <div class="panel-header">
+      <button class="panel-close" id="panel-close" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="panel-region" id="panel-region"><span class="dot"></span><span class="label"></span></div>
+      <h2 class="panel-title" id="panel-title">—</h2>
+      <div class="panel-coords" id="panel-coords">—</div>
+    </div>
+    <div class="panel-body">
+      <section>
+        <p class="panel-summary" id="panel-summary"></p>
+      </section>
+      <section>
+        <div class="section-label">Status</div>
+        <div class="status-control" id="status-control">
+          <button data-state="idle">Not started</button>
+          <button data-state="learning">Learning</button>
+          <button data-state="mastered">Mastered</button>
+        </div>
+      </section>
+      <section>
+        <div class="section-label">Key topics</div>
+        <ul class="topic-list" id="panel-topics"></ul>
+      </section>
+      <section>
+        <div class="section-label">Curated resources</div>
+        <div class="resource-list" id="panel-resources"></div>
+      </section>
+      <section id="panel-prereq-section">
+        <div class="section-label">Prerequisite stars</div>
+        <div class="prereq-list" id="panel-prereqs"></div>
+      </section>
+    </div>
+  </aside>
+
+  <script>
+    // ---------- DATA: 15-node fullstack constellation ----------
+    const REGIONS = {
+      foundation: { name: "Foundation",         color: "#f3c76b", halo: "halo-foundation" },
+      frontend:   { name: "Frontend",           color: "#5ee7df", halo: "halo-frontend" },
+      backend:    { name: "Backend",            color: "#9b72ff", halo: "halo-backend" },
+      data:       { name: "Data",               color: "#60e6a8", halo: "halo-data" },
+      devops:     { name: "DevOps & Beyond",    color: "#ff7a9c", halo: "halo-devops" },
+    };
+
+    const NODES = [
+      { id: "html",     name: "HTML & Semantics", region: "foundation", x: 320,  y: 700,
+        summary: "The skeleton of the web. Learn semantic structure, accessibility primitives, and how documents become DOM trees that everything else operates on.",
+        topics: ["Semantic tags", "Forms", "ARIA basics", "DOM tree", "Meta tags"],
+        resources: [
+          { label: "MDN — HTML basics", url: "https://developer.mozilla.org/en-US/docs/Web/HTML" },
+          { label: "web.dev — Learn HTML", url: "https://web.dev/learn/html" },
+        ] },
+
+      { id: "css",      name: "CSS & Layout", region: "foundation", x: 480,  y: 540,
+        summary: "Style and layout rules — the box model, flexbox, grid, and modern responsive patterns. The foundation for every UI you'll ever build.",
+        topics: ["Box model", "Flexbox", "Grid", "Specificity", "Responsive design"],
+        resources: [
+          { label: "MDN — CSS", url: "https://developer.mozilla.org/en-US/docs/Web/CSS" },
+          { label: "web.dev — Learn CSS", url: "https://web.dev/learn/css" },
+          { label: "CSS Tricks — Flexbox guide", url: "https://css-tricks.com/snippets/css/a-guide-to-flexbox/" },
+        ] },
+
+      { id: "js",       name: "JavaScript Core", region: "foundation", x: 580,  y: 760,
+        summary: "The language that powers everything — values, scope, closures, async, modules. Master these and frameworks become trivial.",
+        topics: ["Variables & scope", "Closures", "Promises", "async/await", "Modules", "Event loop"],
+        resources: [
+          { label: "javascript.info — The Modern JS Tutorial", url: "https://javascript.info/" },
+          { label: "MDN — JavaScript guide", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" },
+        ] },
+
+      { id: "git",      name: "Git & Version Control", region: "foundation", x: 240,  y: 920,
+        summary: "Track every change, collaborate without fear. Branching, merging, rebasing, pull requests — the fabric every team works on.",
+        topics: ["Commits & history", "Branches", "Merge vs rebase", "Pull requests", "Conflict resolution"],
+        resources: [
+          { label: "Pro Git (free book)", url: "https://git-scm.com/book/en/v2" },
+          { label: "Learn Git Branching", url: "https://learngitbranching.js.org/" },
+        ] },
+
+      { id: "react",    name: "React Fundamentals", region: "frontend", x: 820,  y: 480,
+        summary: "Component-based thinking, JSX, props, hooks. The mental model used by most modern frontend codebases.",
+        topics: ["Components & JSX", "useState & useEffect", "Props & composition", "Lists & keys", "Conditional rendering"],
+        resources: [
+          { label: "react.dev — Quick start", url: "https://react.dev/learn" },
+          { label: "react.dev — Tutorial: Tic-Tac-Toe", url: "https://react.dev/learn/tutorial-tic-tac-toe" },
+        ] },
+
+      { id: "state",    name: "State Management", region: "frontend", x: 1020, y: 360,
+        summary: "Coordinating data across a UI: local state, lifted state, derived state, and stores. When to reach for Context, Zustand, Redux, or just URL state.",
+        topics: ["Local vs global state", "Context API", "Zustand / Redux", "Server vs client state", "URL as state"],
+        resources: [
+          { label: "Zustand docs", url: "https://zustand.docs.pmnd.rs/" },
+          { label: "Redux Essentials", url: "https://redux.js.org/tutorials/essentials/part-1-overview-concepts" },
+          { label: "TkDodo — Practical React Query", url: "https://tkdodo.eu/blog/practical-react-query" },
+        ] },
+
+      { id: "fetest",   name: "Frontend Testing", region: "frontend", x: 1200, y: 520,
+        summary: "Confidence that your UI works as users expect it to. Unit, integration, and end-to-end testing tradeoffs.",
+        topics: ["Vitest / Jest", "Testing Library", "Mocking", "E2E with Playwright", "Test pyramid"],
+        resources: [
+          { label: "Testing Library docs", url: "https://testing-library.com/docs/" },
+          { label: "Vitest docs", url: "https://vitest.dev/" },
+          { label: "Playwright docs", url: "https://playwright.dev/" },
+        ] },
+
+      { id: "node",     name: "Node.js & Express", region: "backend", x: 820,  y: 880,
+        summary: "Run JS on the server. The runtime, npm, modules, and building HTTP services with a minimal framework like Express or Fastify.",
+        topics: ["Runtime & event loop", "npm & modules", "Express middleware", "Routing", "Error handling"],
+        resources: [
+          { label: "Node.js — Getting started", url: "https://nodejs.org/en/learn/getting-started/introduction-to-nodejs" },
+          { label: "Express — Guide", url: "https://expressjs.com/en/guide/routing.html" },
+        ] },
+
+      { id: "rest",     name: "REST APIs", region: "backend", x: 1040, y: 940,
+        summary: "Designing and consuming HTTP APIs. Resources, verbs, status codes, pagination, idempotency — the language two services use to talk.",
+        topics: ["HTTP verbs & status", "Resource modeling", "Pagination", "Caching headers", "Idempotency"],
+        resources: [
+          { label: "MDN — HTTP overview", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" },
+          { label: "restfulapi.net — REST tutorial", url: "https://restfulapi.net/" },
+        ] },
+
+      { id: "auth",     name: "Authentication", region: "backend", x: 1240, y: 880,
+        summary: "Proving who someone is. Sessions vs tokens, JWTs, OAuth, password hashing, and the security pitfalls that ruin people's days.",
+        topics: ["Sessions vs JWT", "OAuth 2.0", "Password hashing", "CSRF & XSS", "Refresh tokens"],
+        resources: [
+          { label: "OWASP — Authentication Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" },
+          { label: "jwt.io — Introduction", url: "https://jwt.io/introduction" },
+        ] },
+
+      { id: "sql",      name: "SQL Basics", region: "data", x: 1160, y: 1100,
+        summary: "Query relational data confidently. SELECT, JOIN, GROUP BY, indexes — the daily language of most production systems.",
+        topics: ["SELECT & JOIN", "Aggregation", "Indexes", "Transactions", "Query plans"],
+        resources: [
+          { label: "SQLBolt — interactive lessons", url: "https://sqlbolt.com/" },
+          { label: "Mode — SQL tutorial", url: "https://mode.com/sql-tutorial/" },
+        ] },
+
+      { id: "dbmodel",  name: "Data Modeling", region: "data", x: 1380, y: 1100,
+        summary: "Designing schemas that don't make you cry in two years. Normalization, relationships, and when to denormalize on purpose.",
+        topics: ["Normalization", "Foreign keys", "1:1 / 1:N / N:N", "Indexes & tradeoffs", "Migrations"],
+        resources: [
+          { label: "Stanford — Database Design (free course)", url: "https://www.edx.org/learn/databases/stanford-university-databases-relational-databases-and-sql" },
+          { label: "Vertabelo — Database modeling tutorial", url: "https://vertabelo.com/blog/data-modeling-tutorial/" },
+        ] },
+
+      { id: "docker",   name: "Docker & Containers", region: "devops", x: 1500, y: 920,
+        summary: "Package an app and its environment together. Images, layers, volumes, and a reproducible 'works on my machine' for everyone.",
+        topics: ["Images vs containers", "Dockerfile", "docker compose", "Volumes & networks", "Image layers"],
+        resources: [
+          { label: "Docker — Get started", url: "https://docs.docker.com/get-started/" },
+          { label: "Docker Compose docs", url: "https://docs.docker.com/compose/" },
+        ] },
+
+      { id: "cicd",     name: "CI/CD & Deploy", region: "devops", x: 1640, y: 740,
+        summary: "Automate the path from commit to production. Pipelines, environments, previews, and shipping safely many times a day.",
+        topics: ["GitHub Actions", "Test & build pipelines", "Preview deploys", "Environments & secrets", "Rollbacks"],
+        resources: [
+          { label: "GitHub Actions — Quickstart", url: "https://docs.github.com/en/actions/quickstart" },
+          { label: "Vercel — Git integration", url: "https://vercel.com/docs/git" },
+        ] },
+
+      { id: "sysd",     name: "System Design Primer", region: "devops", x: 1480, y: 540,
+        summary: "Think in services, queues, caches, and tradeoffs. The discipline of designing systems that survive growth and failure.",
+        topics: ["Scaling reads vs writes", "Caching layers", "Queues & async", "Consistency tradeoffs", "Load balancing"],
+        resources: [
+          { label: "donnemartin/system-design-primer (GitHub)", url: "https://github.com/donnemartin/system-design-primer" },
+          { label: "ByteByteGo — System Design 101", url: "https://github.com/ByteByteGoHq/system-design-101" },
+        ] },
+    ];
+
+    const EDGES = [
+      ["html", "css"], ["html", "js"], ["css", "js"],
+      ["js", "git"], ["html", "git"],
+      ["css", "react"], ["js", "react"],
+      ["js", "node"], ["git", "node"],
+      ["react", "state"], ["state", "fetest"], ["react", "fetest"],
+      ["node", "rest"], ["rest", "auth"], ["rest", "sql"],
+      ["sql", "dbmodel"], ["auth", "docker"], ["dbmodel", "docker"],
+      ["docker", "cicd"], ["cicd", "sysd"],
+      ["react", "sysd"], ["fetest", "sysd"], ["auth", "sysd"],
+    ];
+
+    const REGION_LABELS = [
+      { region: "foundation", text: "FOUNDATION",         x: 380,  y: 460 },
+      { region: "frontend",   text: "FRONTEND ARC",       x: 1010, y: 250 },
+      { region: "backend",    text: "BACKEND CLUSTER",    x: 1030, y: 1030 },
+      { region: "data",       text: "DATA SHELF",         x: 1270, y: 1190 },
+      { region: "devops",     text: "DEVOPS RIM",         x: 1620, y: 600 },
+    ];
+
+    // ---------- STATE ----------
+    const STORAGE_KEY = "stellar-path-prop3-v1";
+    let progress = loadProgress();          // { [id]: 'idle' | 'learning' | 'mastered' }
+    let selectedId = null;
+    let view = { tx: 0, ty: 0, scale: 1 };  // applied as transform on #world
+    const nodeById = Object.fromEntries(NODES.map(n => [n.id, n]));
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (_) {}
+      const init = {};
+      NODES.forEach(n => { init[n.id] = "idle"; });
+      return init;
+    }
+    function saveProgress() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch (_) {}
+    }
+
+    // ---------- STARFIELD (background) ----------
+    const starCanvas = document.getElementById("starfield");
+    const starCtx = starCanvas.getContext("2d");
+    let stars = [];
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      starCanvas.width = window.innerWidth * dpr;
+      starCanvas.height = window.innerHeight * dpr;
+      starCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildStars();
+    }
+    function buildStars() {
+      const w = window.innerWidth, h = window.innerHeight;
+      const count = Math.min(420, Math.floor((w * h) / 5200));
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.pow(Math.random(), 2.6) * 1.5 + 0.2,
+        a: 0.3 + Math.random() * 0.6,
+        ph: Math.random() * Math.PI * 2,
+        sp: 0.5 + Math.random() * 1.4,
+      }));
+    }
+    function drawStars(t) {
+      const w = window.innerWidth, h = window.innerHeight;
+      starCtx.clearRect(0, 0, w, h);
+      for (const s of stars) {
+        const tw = 0.55 + 0.45 * Math.sin(t * 0.001 * s.sp + s.ph);
+        starCtx.globalAlpha = s.a * tw;
+        starCtx.fillStyle = "#cfd8ff";
+        starCtx.beginPath();
+        starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        starCtx.fill();
+      }
+      starCtx.globalAlpha = 1;
+      requestAnimationFrame(drawStars);
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    requestAnimationFrame(drawStars);
+
+    // ---------- BUILD SVG GRAPH ----------
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById("map");
+    const world = document.getElementById("world");
+    const edgesLayer = document.getElementById("edges-layer");
+    const nodesLayer = document.getElementById("nodes-layer");
+    const regionLabels = document.getElementById("region-labels");
+
+    REGION_LABELS.forEach(rl => {
+      const t = document.createElementNS(SVG_NS, "text");
+      t.setAttribute("class", "region-label");
+      t.setAttribute("x", rl.x);
+      t.setAttribute("y", rl.y);
+      t.setAttribute("fill", REGIONS[rl.region].color);
+      t.textContent = rl.text;
+      regionLabels.appendChild(t);
+    });
+
+    const edgeEls = {};
+    EDGES.forEach(([a, b]) => {
+      const A = nodeById[a], B = nodeById[b];
+      const line = document.createElementNS(SVG_NS, "line");
+      line.setAttribute("class", "edge");
+      line.setAttribute("x1", A.x);
+      line.setAttribute("y1", A.y);
+      line.setAttribute("x2", B.x);
+      line.setAttribute("y2", B.y);
+      line.dataset.a = a; line.dataset.b = b;
+      edgesLayer.appendChild(line);
+      edgeEls[a + ":" + b] = line;
+    });
+
+    const nodeEls = {};
+    NODES.forEach(n => {
+      const region = REGIONS[n.region];
+      const g = document.createElementNS(SVG_NS, "g");
+      g.setAttribute("class", "node");
+      g.setAttribute("transform", `translate(${n.x},${n.y})`);
+      g.dataset.id = n.id;
+
+      const halo = document.createElementNS(SVG_NS, "circle");
+      halo.setAttribute("class", "node-halo");
+      halo.setAttribute("r", 22);
+      halo.setAttribute("fill", `url(#${region.halo})`);
+      g.appendChild(halo);
+
+      const ring = document.createElementNS(SVG_NS, "circle");
+      ring.setAttribute("class", "node-ring");
+      ring.setAttribute("r", 10);
+      ring.setAttribute("stroke", region.color);
+      g.appendChild(ring);
+
+      const core = document.createElementNS(SVG_NS, "circle");
+      core.setAttribute("class", "node-core");
+      core.setAttribute("r", 4);
+      core.setAttribute("fill", region.color);
+      core.setAttribute("filter", "url(#glow-soft)");
+      g.appendChild(core);
+
+      const label = document.createElementNS(SVG_NS, "text");
+      label.setAttribute("class", "node-label");
+      label.setAttribute("x", 0);
+      label.setAttribute("y", 32);
+      label.textContent = n.name;
+      g.appendChild(label);
+
+      // hit area (transparent, larger) for easier clicks
+      const hit = document.createElementNS(SVG_NS, "circle");
+      hit.setAttribute("r", 18);
+      hit.setAttribute("fill", "transparent");
+      hit.style.cursor = "pointer";
+      g.appendChild(hit);
+
+      g.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (didDrag) return;
+        selectNode(n.id, true);
+      });
+      g.addEventListener("mouseenter", () => highlightNode(n.id, true));
+      g.addEventListener("mouseleave", () => highlightNode(n.id, false));
+
+      nodesLayer.appendChild(g);
+      nodeEls[n.id] = { g, halo, ring, core, label };
+    });
+
+    // ---------- VISUAL STATE APPLY ----------
+    function applyVisualState() {
+      let mastered = 0;
+      NODES.forEach(n => {
+        const st = progress[n.id] || "idle";
+        const els = nodeEls[n.id];
+        const region = REGIONS[n.region];
+        els.g.classList.remove("is-idle", "is-learning", "is-mastered", "is-selected");
+        els.g.classList.add("is-" + st);
+        if (selectedId === n.id) els.g.classList.add("is-selected");
+
+        if (st === "idle") {
+          els.halo.setAttribute("r", 18);
+          els.halo.setAttribute("opacity", 0.35);
+          els.core.setAttribute("r", 3.4);
+          els.core.setAttribute("opacity", 0.78);
+          els.core.setAttribute("filter", "url(#glow-soft)");
+        } else if (st === "learning") {
+          els.halo.setAttribute("r", 26);
+          els.halo.setAttribute("opacity", 0.7);
+          els.core.setAttribute("r", 4.6);
+          els.core.setAttribute("opacity", 1);
+          els.core.setAttribute("filter", "url(#glow-soft)");
+        } else if (st === "mastered") {
+          els.halo.setAttribute("r", 36);
+          els.halo.setAttribute("opacity", 1);
+          els.core.setAttribute("r", 6);
+          els.core.setAttribute("opacity", 1);
+          els.core.setAttribute("filter", "url(#glow-strong)");
+          mastered++;
+        }
+
+        // selected: extra ring color full
+        if (selectedId === n.id) {
+          els.ring.setAttribute("stroke", region.color);
+          els.ring.setAttribute("r", 14);
+        } else {
+          els.ring.setAttribute("r", 10);
+        }
+      });
+
+      // edges: brightness based on endpoints
+      EDGES.forEach(([a, b]) => {
+        const line = edgeEls[a + ":" + b];
+        const sa = progress[a], sb = progress[b];
+        line.classList.remove("lit", "highlight", "dim");
+        if (sa === "mastered" && sb === "mastered") line.classList.add("lit");
+        if (selectedId && (a === selectedId || b === selectedId)) line.classList.add("highlight");
+        else if (selectedId) line.classList.add("dim");
+      });
+
+      // progress UI
+      document.getElementById("prog-num").textContent = mastered;
+      document.getElementById("prog-total").textContent = NODES.length;
+      document.getElementById("prog-fill").style.width = (mastered / NODES.length * 100).toFixed(1) + "%";
+
+      // mini map nodes
+      updateMinimapNodes();
+    }
+
+    function highlightNode(id, on) {
+      if (selectedId) return; // when something is selected, hover doesn't override
+      EDGES.forEach(([a, b]) => {
+        const line = edgeEls[a + ":" + b];
+        line.classList.remove("highlight", "dim");
+        if (on && (a === id || b === id)) line.classList.add("highlight");
+      });
+    }
+
+    // ---------- PAN / ZOOM ----------
+    const ZOOM_MIN = 0.5;
+    const ZOOM_MAX = 3.0;
+
+    function applyTransform() {
+      world.setAttribute("transform", `translate(${view.tx} ${view.ty}) scale(${view.scale})`);
+      updateMinimapViewport();
+    }
+
+    function clientToLogical(cx, cy) {
+      const rect = svg.getBoundingClientRect();
+      // SVG viewBox is 1920x1200, fit-to-rect with preserveAspectRatio=meet.
+      const vbW = 1920, vbH = 1200;
+      const scaleFit = Math.min(rect.width / vbW, rect.height / vbH);
+      const offX = (rect.width  - vbW * scaleFit) / 2;
+      const offY = (rect.height - vbH * scaleFit) / 2;
+      // point in viewBox (pre-world-transform) coordinates:
+      const vbx = (cx - rect.left - offX) / scaleFit;
+      const vby = (cy - rect.top  - offY) / scaleFit;
+      // un-apply world transform to get logical (data) coords:
+      const lx = (vbx - view.tx) / view.scale;
+      const ly = (vby - view.ty) / view.scale;
+      return { lx, ly, vbx, vby, scaleFit };
+    }
+
+    function zoomAt(cx, cy, factor) {
+      const before = clientToLogical(cx, cy);
+      const newScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, view.scale * factor));
+      const realFactor = newScale / view.scale;
+      view.scale = newScale;
+      // Keep the logical point under cursor stable:
+      // vbx = lx * scale + tx  =>  tx = vbx - lx * scale
+      view.tx = before.vbx - before.lx * view.scale;
+      view.ty = before.vby - before.ly * view.scale;
+      applyTransform();
+    }
+
+    let isPanning = false;
+    let panStart = null;
+    let didDrag = false;
+
+    svg.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      isPanning = true;
+      didDrag = false;
+      panStart = { x: e.clientX, y: e.clientY, tx: view.tx, ty: view.ty };
+      svg.classList.add("is-panning");
+      svg.setPointerCapture(e.pointerId);
+    });
+    svg.addEventListener("pointermove", (e) => {
+      if (!isPanning) return;
+      const dx = e.clientX - panStart.x;
+      const dy = e.clientY - panStart.y;
+      if (!didDrag && (Math.abs(dx) + Math.abs(dy)) > 4) didDrag = true;
+      // Convert client-pixel delta to viewBox delta (account for fit scale)
+      const rect = svg.getBoundingClientRect();
+      const scaleFit = Math.min(rect.width / 1920, rect.height / 1200);
+      view.tx = panStart.tx + dx / scaleFit;
+      view.ty = panStart.ty + dy / scaleFit;
+      applyTransform();
+    });
+    function endPan(e) {
+      if (!isPanning) return;
+      isPanning = false;
+      svg.classList.remove("is-panning");
+      try { svg.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    svg.addEventListener("pointerup", endPan);
+    svg.addEventListener("pointercancel", endPan);
+    svg.addEventListener("pointerleave", endPan);
+
+    svg.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      // Smaller delta on trackpad pinch (ctrlKey indicator) and on regular wheel.
+      const intensity = e.ctrlKey ? 0.012 : 0.0018;
+      const factor = Math.exp(-e.deltaY * intensity);
+      zoomAt(e.clientX, e.clientY, factor);
+      hideHint();
+    }, { passive: false });
+
+    svg.addEventListener("click", (e) => {
+      // Click on empty space deselects
+      if (e.target === svg || e.target === world) {
+        selectNode(null);
+      }
+    });
+
+    // ---------- SELECTION + PANEL ----------
+    const panel = document.getElementById("panel");
+    const panelTitle = document.getElementById("panel-title");
+    const panelCoords = document.getElementById("panel-coords");
+    const panelRegion = document.getElementById("panel-region");
+    const panelSummary = document.getElementById("panel-summary");
+    const panelTopics = document.getElementById("panel-topics");
+    const panelResources = document.getElementById("panel-resources");
+    const panelPrereqs = document.getElementById("panel-prereqs");
+    const panelPrereqSection = document.getElementById("panel-prereq-section");
+    const statusControl = document.getElementById("status-control");
+
+    document.getElementById("panel-close").addEventListener("click", () => selectNode(null));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") selectNode(null);
+      if (e.key === "+" || (e.key === "=" && e.shiftKey)) zoomAtCenter(1.2);
+      if (e.key === "-" || e.key === "_") zoomAtCenter(1 / 1.2);
+      if (e.key === "0") recenter();
+    });
+
+    statusControl.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-state]");
+      if (!btn || !selectedId) return;
+      progress[selectedId] = btn.dataset.state;
+      saveProgress();
+      renderStatusControl();
+      applyVisualState();
+    });
+
+    function selectNode(id, recenterOnIt = false) {
+      selectedId = id;
+      if (!id) {
+        panel.classList.remove("open");
+        panel.setAttribute("aria-hidden", "true");
+        applyVisualState();
+        return;
+      }
+      const n = nodeById[id];
+      const region = REGIONS[n.region];
+      panelTitle.textContent = n.name;
+      panelCoords.textContent = `SECTOR ${n.region.toUpperCase()} · ${Math.round(n.x)}, ${Math.round(n.y)}`;
+      panelRegion.querySelector(".dot").style.background = region.color;
+      panelRegion.querySelector(".dot").style.color = region.color;
+      panelRegion.querySelector(".label").textContent = region.name;
+      panelSummary.textContent = n.summary;
+
+      panelTopics.innerHTML = "";
+      n.topics.forEach(t => {
+        const li = document.createElement("li");
+        li.textContent = t;
+        panelTopics.appendChild(li);
+      });
+
+      panelResources.innerHTML = "";
+      n.resources.forEach(r => {
+        const a = document.createElement("a");
+        a.href = r.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        const host = (() => { try { return new URL(r.url).hostname.replace(/^www\./, ""); } catch (_) { return ""; } })();
+        a.innerHTML = `
+          <span class="res-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+          </span>
+          <span class="res-text">
+            <span>${escapeHtml(r.label)}</span>
+            <span class="res-host">${escapeHtml(host)}</span>
+          </span>`;
+        panelResources.appendChild(a);
+      });
+
+      const prereqs = EDGES.filter(([a, b]) => b === id).map(([a]) => a)
+        .concat(EDGES.filter(([a, b]) => a === id).map(([, b]) => b));
+      const uniqPrereqs = Array.from(new Set(prereqs)).filter(p => p !== id);
+      panelPrereqs.innerHTML = "";
+      if (uniqPrereqs.length === 0) {
+        panelPrereqSection.style.display = "none";
+      } else {
+        panelPrereqSection.style.display = "";
+        uniqPrereqs.forEach(pid => {
+          const p = nodeById[pid];
+          const r = REGIONS[p.region];
+          const row = document.createElement("div");
+          row.className = "row";
+          row.innerHTML = `
+            <span class="dot" style="background:${r.color};color:${r.color}"></span>
+            <span>${escapeHtml(p.name)}</span>
+            <span class="status">${(progress[p.id] || "idle").toUpperCase()}</span>`;
+          row.addEventListener("click", () => selectNode(pid, true));
+          panelPrereqs.appendChild(row);
+        });
+      }
+
+      renderStatusControl();
+      panel.classList.add("open");
+      panel.setAttribute("aria-hidden", "false");
+      applyVisualState();
+      if (recenterOnIt) flyTo(n.x, n.y);
+      hideHint();
+    }
+
+    function renderStatusControl() {
+      const cur = progress[selectedId] || "idle";
+      statusControl.dataset.state = cur;
+      statusControl.querySelectorAll("button").forEach(btn => {
+        btn.classList.toggle("is-active", btn.dataset.state === cur);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[c]);
+    }
+
+    // ---------- FLY TO / RECENTER ----------
+    function flyTo(lx, ly, targetScale = null) {
+      const rect = svg.getBoundingClientRect();
+      const scaleFit = Math.min(rect.width / 1920, rect.height / 1200);
+      const vbW = 1920, vbH = 1200;
+      const goalScale = targetScale != null ? targetScale : Math.max(view.scale, 1.4);
+      // Center logical point in viewbox: vbx=vbW/2, vby=vbH*0.45 (slightly above center to leave room for panel)
+      const vbx = vbW / 2, vby = vbH * 0.45;
+      const fromTx = view.tx, fromTy = view.ty, fromS = view.scale;
+      const toS = goalScale;
+      const toTx = vbx - lx * toS;
+      const toTy = vby - ly * toS;
+
+      const start = performance.now();
+      const dur = 520;
+      function step(now) {
+        const t = Math.min(1, (now - start) / dur);
+        const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; // easeInOutQuad
+        view.tx = fromTx + (toTx - fromTx) * e;
+        view.ty = fromTy + (toTy - fromTy) * e;
+        view.scale = fromS + (toS - fromS) * e;
+        applyTransform();
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function recenter() {
+      const fromTx = view.tx, fromTy = view.ty, fromS = view.scale;
+      const toTx = 0, toTy = 0, toS = 1;
+      const start = performance.now();
+      const dur = 520;
+      function step(now) {
+        const t = Math.min(1, (now - start) / dur);
+        const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        view.tx = fromTx + (toTx - fromTx) * e;
+        view.ty = fromTy + (toTy - fromTy) * e;
+        view.scale = fromS + (toS - fromS) * e;
+        applyTransform();
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function zoomAtCenter(factor) {
+      const rect = svg.getBoundingClientRect();
+      zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, factor);
+    }
+
+    document.getElementById("btn-zoom-in").addEventListener("click", () => zoomAtCenter(1.25));
+    document.getElementById("btn-zoom-out").addEventListener("click", () => zoomAtCenter(1 / 1.25));
+    document.getElementById("btn-recenter").addEventListener("click", recenter);
+    document.getElementById("btn-reset").addEventListener("click", () => {
+      if (!confirm("Reset all progress on the galaxy?")) return;
+      NODES.forEach(n => { progress[n.id] = "idle"; });
+      saveProgress();
+      applyVisualState();
+      if (selectedId) renderStatusControl();
+    });
+
+    // ---------- SEARCH ----------
+    const search = document.getElementById("search");
+    const searchResults = document.getElementById("search-results");
+
+    function renderSearchResults(q) {
+      const query = q.trim().toLowerCase();
+      if (!query) { searchResults.classList.remove("open"); return; }
+      const matches = NODES
+        .map(n => {
+          const hay = (n.name + " " + n.region + " " + n.topics.join(" ")).toLowerCase();
+          return { n, score: hay.includes(query) ? hay.indexOf(query) : -1 };
+        })
+        .filter(m => m.score >= 0)
+        .sort((a, b) => a.score - b.score)
+        .slice(0, 8);
+      if (matches.length === 0) { searchResults.classList.remove("open"); return; }
+      searchResults.innerHTML = "";
+      matches.forEach(({ n }) => {
+        const row = document.createElement("div");
+        row.className = "item";
+        row.innerHTML = `
+          <span class="dot" style="background:${REGIONS[n.region].color};color:${REGIONS[n.region].color}"></span>
+          <span>${escapeHtml(n.name)}</span>
+          <span class="meta">${escapeHtml(n.region.toUpperCase())}</span>`;
+        row.addEventListener("click", () => {
+          selectNode(n.id, true);
+          search.value = "";
+          searchResults.classList.remove("open");
+        });
+        searchResults.appendChild(row);
+      });
+      searchResults.classList.add("open");
+    }
+    search.addEventListener("input", (e) => renderSearchResults(e.target.value));
+    search.addEventListener("focus", (e) => renderSearchResults(e.target.value));
+    search.addEventListener("blur", () => setTimeout(() => searchResults.classList.remove("open"), 160));
+    search.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const first = searchResults.querySelector(".item");
+        if (first) first.click();
+      }
+    });
+
+    // ---------- MINIMAP ----------
+    const miniSvg = document.getElementById("minimap-svg");
+    const miniEdges = document.createElementNS(SVG_NS, "g");
+    const miniNodes = document.createElementNS(SVG_NS, "g");
+    const miniViewport = document.createElementNS(SVG_NS, "rect");
+    miniViewport.setAttribute("class", "viewport");
+    miniSvg.appendChild(miniEdges);
+    miniSvg.appendChild(miniNodes);
+    miniSvg.appendChild(miniViewport);
+
+    EDGES.forEach(([a, b]) => {
+      const A = nodeById[a], B = nodeById[b];
+      const line = document.createElementNS(SVG_NS, "line");
+      line.setAttribute("class", "mini-edge");
+      line.setAttribute("x1", A.x); line.setAttribute("y1", A.y);
+      line.setAttribute("x2", B.x); line.setAttribute("y2", B.y);
+      miniEdges.appendChild(line);
+    });
+
+    const miniNodeEls = {};
+    NODES.forEach(n => {
+      const c = document.createElementNS(SVG_NS, "circle");
+      c.setAttribute("class", "mini-node");
+      c.setAttribute("cx", n.x); c.setAttribute("cy", n.y);
+      c.setAttribute("r", 8);
+      c.setAttribute("fill", REGIONS[n.region].color);
+      miniNodes.appendChild(c);
+      miniNodeEls[n.id] = c;
+    });
+
+    function updateMinimapNodes() {
+      NODES.forEach(n => {
+        const st = progress[n.id] || "idle";
+        const c = miniNodeEls[n.id];
+        if (st === "mastered")    { c.setAttribute("r", 12); c.setAttribute("opacity", 1); }
+        else if (st === "learning"){ c.setAttribute("r", 9);  c.setAttribute("opacity", 0.85); }
+        else                       { c.setAttribute("r", 6);  c.setAttribute("opacity", 0.45); }
+      });
+    }
+
+    function updateMinimapViewport() {
+      const rect = svg.getBoundingClientRect();
+      const scaleFit = Math.min(rect.width / 1920, rect.height / 1200);
+      const offX = (rect.width  - 1920 * scaleFit) / 2;
+      const offY = (rect.height - 1200 * scaleFit) / 2;
+      // Visible logical region:
+      const lx = (-view.tx) / view.scale;
+      const ly = (-view.ty) / view.scale;
+      const lw = (rect.width  / scaleFit) / view.scale;
+      const lh = (rect.height / scaleFit) / view.scale;
+      // Clamp to viewBox bounds for display
+      const x = Math.max(0, lx);
+      const y = Math.max(0, ly);
+      const w = Math.min(1920 - x, Math.max(60, lw));
+      const h = Math.min(1200 - y, Math.max(60, lh));
+      miniViewport.setAttribute("x", x);
+      miniViewport.setAttribute("y", y);
+      miniViewport.setAttribute("width", w);
+      miniViewport.setAttribute("height", h);
+    }
+
+    // click on minimap to fly there
+    miniSvg.addEventListener("click", (e) => {
+      const rect = miniSvg.getBoundingClientRect();
+      const sx = (e.clientX - rect.left) / rect.width  * 1920;
+      const sy = (e.clientY - rect.top)  / rect.height * 1200;
+      flyTo(sx, sy, view.scale);
+    });
+
+    // ---------- HINT ----------
+    const hint = document.getElementById("hint");
+    let hintTimer = setTimeout(hideHint, 5500);
+    function hideHint() {
+      hint.classList.add("hidden");
+      clearTimeout(hintTimer);
+    }
+    svg.addEventListener("pointerdown", () => hideHint());
+
+    // ---------- INIT ----------
+    applyTransform();
+    applyVisualState();
+
+    // Re-update the minimap viewport on window resize
+    window.addEventListener("resize", () => { applyTransform(); });
+  </script>
+</body>
+</html>
