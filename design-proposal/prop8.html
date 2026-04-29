@@ -1411,17 +1411,17 @@
       main: {
         coreRadius: 11.0,
         nucRadius:  3.6,
-        haloIdle:   180, haloLearn: 240, haloMaster: 340,
+        haloIdle:   132, haloLearn: 178, haloMaster: 248,
         haloAlphaIdleMul: 1.10, haloAlphaLearnMul: 1.05, haloAlphaMasterMul: 1.05,
         hitRadius:  120,
         ringIdle: { inner: 30, outer: 32.5 },
         ringReady:{ inner: 34, outer: 36.5 },
-        flareScaleX: 520, flareScaleY: 22,
+        flareScaleX: 360, flareScaleY: 15,
       },
       sub: {
         coreRadius: 6.5,
         nucRadius:  2.2,
-        haloIdle:   105, haloLearn: 160, haloMaster: 230,
+        haloIdle:   78, haloLearn: 118, haloMaster: 168,
         haloAlphaIdleMul: 1.0,  haloAlphaLearnMul: 1.0,  haloAlphaMasterMul: 1.0,
         hitRadius:  82,
         ringIdle: { inner: 17, outer: 18.6 },
@@ -1455,12 +1455,12 @@
         fogColor:       0x000000,
         fogDensity:     0.000040,
 
-        starOpacity:    1.0,
-        dustOpacity:    0.55,
-        milkywayOpacity:0.7,
-        nebulaOpacity:  0.45,
-        anchorOpacity:  0.04,
-        galaxyOpacity:  0.55,
+        starOpacity:    0.68,
+        dustOpacity:    0.38,
+        milkywayOpacity:0.42,
+        nebulaOpacity:  0.24,
+        anchorOpacity:  0.018,
+        galaxyOpacity:  0,
 
         edgeOpacityIdle:   0.30,
         edgeOpacityWarm:   0.58,
@@ -1468,14 +1468,14 @@
 
         regionLineOpacity: 0.10,
 
-        bloomStrength:    1.20,
-        bloomRadius:      0.85,
-        bloomThreshold:   0.0,
-        exposure:         1.10,
+        bloomStrength:    0.92,
+        bloomRadius:      0.78,
+        bloomThreshold:   0.04,
+        exposure:         1.02,
 
         focusedNebulaMul: 0.70,
 
-        vignetteStrength: 0.80,
+        vignetteStrength: 0.88,
         grainStrength:    0.040,
         chromaStrength:   0.0010,
       },
@@ -1486,12 +1486,12 @@
         fogColor:       0x000000,
         fogDensity:     0.000040,
 
-        starOpacity:    1.05,
-        dustOpacity:    0.55,
-        milkywayOpacity:0.85,
-        nebulaOpacity:  0.65,
-        anchorOpacity:  0.05,
-        galaxyOpacity:  0.78,
+        starOpacity:    0.78,
+        dustOpacity:    0.42,
+        milkywayOpacity:0.52,
+        nebulaOpacity:  0.32,
+        anchorOpacity:  0.022,
+        galaxyOpacity:  0,
 
         edgeOpacityIdle:   0.36,
         edgeOpacityWarm:   0.62,
@@ -1499,10 +1499,10 @@
 
         regionLineOpacity: 0.14,
 
-        bloomStrength:    0.95,
-        bloomRadius:      0.80,
-        bloomThreshold:   0.05,
-        exposure:         0.95,
+        bloomStrength:    0.82,
+        bloomRadius:      0.74,
+        bloomThreshold:   0.06,
+        exposure:         0.92,
 
         focusedNebulaMul: 0.72,
 
@@ -1686,9 +1686,9 @@
       c.width = c.height = size;
       const ctx = c.getContext('2d');
       const g = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-      g.addColorStop(0.00, 'rgba(255,255,255,1)');
-      g.addColorStop(0.18, 'rgba(255,255,255,0.6)');
-      g.addColorStop(0.50, 'rgba(255,255,255,0.10)');
+      g.addColorStop(0.00, 'rgba(255,255,255,0.85)');
+      g.addColorStop(0.22, 'rgba(255,255,255,0.42)');
+      g.addColorStop(0.50, 'rgba(255,255,255,0.07)');
       g.addColorStop(1.00, 'rgba(255,255,255,0)');
       ctx.fillStyle = g; ctx.fillRect(0, 0, size, size);
       const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
@@ -1701,8 +1701,8 @@
       c.width = c.height = size;
       const ctx = c.getContext('2d');
       const g = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-      g.addColorStop(0,    'rgba(255,255,255,1)');
-      g.addColorStop(0.3,  'rgba(255,255,255,0.6)');
+      g.addColorStop(0,    'rgba(255,255,255,0.92)');
+      g.addColorStop(0.3,  'rgba(255,255,255,0.45)');
       g.addColorStop(1,    'rgba(255,255,255,0)');
       ctx.fillStyle = g; ctx.fillRect(0, 0, size, size);
       const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
@@ -1719,8 +1719,8 @@
       const cx = size / 2, cy = size / 2;
       // soft core glow
       const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, size * 0.25);
-      core.addColorStop(0, 'rgba(255,255,255,1)');
-      core.addColorStop(0.25, 'rgba(255,255,255,0.55)');
+      core.addColorStop(0, 'rgba(255,255,255,0.88)');
+      core.addColorStop(0.25, 'rgba(255,255,255,0.38)');
       core.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = core;
       ctx.fillRect(0, 0, size, size);
@@ -1740,10 +1740,10 @@
         ctx.fillRect(-length, -thickness/2, length * 2, thickness);
         ctx.restore();
       };
-      drawSpike(0,           size * 0.48, 1.6, 0.95); // horizontal
-      drawSpike(Math.PI/2,   size * 0.48, 1.6, 0.95); // vertical
-      drawSpike(Math.PI/4,   size * 0.34, 1.0, 0.45); // diag /
-      drawSpike(-Math.PI/4,  size * 0.34, 1.0, 0.45); // diag \
+      drawSpike(0,           size * 0.48, 1.6, 0.62); // horizontal
+      drawSpike(Math.PI/2,   size * 0.48, 1.6, 0.62); // vertical
+      drawSpike(Math.PI/4,   size * 0.34, 1.0, 0.28); // diag /
+      drawSpike(-Math.PI/4,  size * 0.34, 1.0, 0.28); // diag \
       const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
     }
     const SPIKE_TEX = makeSpikeStarTexture();
@@ -1756,9 +1756,9 @@
       const ctx = c.getContext('2d');
       const g = ctx.createLinearGradient(0, 0, w, 0);
       g.addColorStop(0,    'rgba(255,255,255,0)');
-      g.addColorStop(0.46, 'rgba(255,255,255,0.45)');
-      g.addColorStop(0.50, 'rgba(255,255,255,1)');
-      g.addColorStop(0.54, 'rgba(255,255,255,0.45)');
+      g.addColorStop(0.46, 'rgba(255,255,255,0.28)');
+      g.addColorStop(0.50, 'rgba(255,255,255,0.72)');
+      g.addColorStop(0.54, 'rgba(255,255,255,0.28)');
       g.addColorStop(1,    'rgba(255,255,255,0)');
       ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
       // vertical fade
@@ -1783,12 +1783,12 @@
       const col = new THREE.Color(hexColor);
       const r = Math.round(col.r * 255), g = Math.round(col.g * 255), b = Math.round(col.b * 255);
 
-      // base radial falloff (compact, leaves more of the canvas dark)
+      // base radial falloff — soft, low-contrast wash (easier on the eyes)
       const grd = ctx.createRadialGradient(size/2, size/2, size*0.04, size/2, size/2, size/2);
-      grd.addColorStop(0.00, `rgba(${r},${g},${b},0.95)`);
-      grd.addColorStop(0.10, `rgba(${r},${g},${b},0.65)`);
-      grd.addColorStop(0.30, `rgba(${r},${g},${b},0.20)`);
-      grd.addColorStop(0.60, `rgba(${r},${g},${b},0.06)`);
+      grd.addColorStop(0.00, `rgba(${r},${g},${b},0.48)`);
+      grd.addColorStop(0.12, `rgba(${r},${g},${b},0.28)`);
+      grd.addColorStop(0.32, `rgba(${r},${g},${b},0.10)`);
+      grd.addColorStop(0.65, `rgba(${r},${g},${b},0.03)`);
       grd.addColorStop(1.00, `rgba(${r},${g},${b},0)`);
       ctx.fillStyle = grd; ctx.fillRect(0, 0, size, size);
 
@@ -1808,71 +1808,14 @@
             Math.sin(u * 2.2 - v * 1.1 + r2 * 6) * 0.30 +
             Math.sin(u * 4.6 + v * 3.3) * 0.18 +
             Math.sin(u * 9.0 - v * 7.0) * 0.10 +
-            (Math.random() - 0.5) * 0.40;
-          // dust lane: subtract a smooth band
-          const lane = 1.0 - Math.exp(-Math.pow((dy * 2.4 + 0.3 * Math.sin(dx * 4)), 2) * 1.5) * 0.55;
+            (Math.random() - 0.5) * 0.22;
+          // dust lane: subtract a smooth band (gentler)
+          const lane = 1.0 - Math.exp(-Math.pow((dy * 2.4 + 0.3 * Math.sin(dx * 4)), 2) * 1.5) * 0.38;
           const mod = (0.45 + 0.55 * Math.max(0, fbm)) * lane;
-          data[i+3] = Math.max(0, Math.min(255, data[i+3] * (0.30 + 0.95 * mod)));
+          data[i+3] = Math.max(0, Math.min(255, data[i+3] * (0.52 + 0.55 * mod)));
         }
       }
       ctx.putImageData(img, 0, 0);
-      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
-    }
-
-    /* Distant background spiral galaxy — 2-arm logarithmic spiral */
-    function makeSpiralGalaxyTexture(coreHex, armHex) {
-      const size = 1024;
-      const c = document.createElement('canvas');
-      c.width = c.height = size;
-      const ctx = c.getContext('2d');
-      const cx = size / 2, cy = size / 2;
-      const core = new THREE.Color(coreHex);
-      const arm  = new THREE.Color(armHex);
-      const cR = Math.round(core.r*255), cG = Math.round(core.g*255), cB = Math.round(core.b*255);
-      const aR = Math.round(arm.r*255),  aG = Math.round(arm.g*255),  aB = Math.round(arm.b*255);
-
-      // bright bulge
-      const bulge = ctx.createRadialGradient(cx, cy, 0, cx, cy, size * 0.20);
-      bulge.addColorStop(0,    `rgba(${cR},${cG},${cB},1)`);
-      bulge.addColorStop(0.25, `rgba(${cR},${cG},${cB},0.55)`);
-      bulge.addColorStop(1,    `rgba(${cR},${cG},${cB},0)`);
-      ctx.fillStyle = bulge; ctx.fillRect(0, 0, size, size);
-
-      // logarithmic spiral arms (stippled)
-      ctx.globalCompositeOperation = 'lighter';
-      const arms = 2;
-      const a = 0.18, k = 0.28; // r = a * exp(k * theta)
-      for (let armI = 0; armI < arms; armI++) {
-        const phase = (armI / arms) * Math.PI * 2;
-        for (let i = 0; i < 7000; i++) {
-          const theta = i * 0.012 + phase;
-          const r = a * Math.exp(k * theta) * size * 0.36;
-          if (r > size * 0.49) break;
-          // jitter for star scatter
-          const jitter = (Math.random() - 0.5) * (12 + r * 0.06);
-          const angJitter = (Math.random() - 0.5) * 0.18;
-          const x = cx + Math.cos(theta + angJitter) * r + jitter;
-          const y = cy + Math.sin(theta + angJitter) * r + jitter;
-          const alpha = (1 - r / (size * 0.49)) * (0.10 + Math.random() * 0.30);
-          ctx.fillStyle = `rgba(${aR},${aG},${aB},${alpha.toFixed(3)})`;
-          const sz = 0.6 + Math.random() * 1.2;
-          ctx.fillRect(x, y, sz, sz);
-        }
-      }
-      // dust lane along arm
-      ctx.globalCompositeOperation = 'destination-out';
-      for (let armI = 0; armI < arms; armI++) {
-        const phase = (armI / arms) * Math.PI * 2;
-        for (let i = 0; i < 1800; i++) {
-          const theta = i * 0.012 + phase;
-          const r = a * Math.exp(k * theta) * size * 0.36;
-          if (r > size * 0.49) break;
-          const x = cx + Math.cos(theta) * r;
-          const y = cy + Math.sin(theta) * r;
-          ctx.fillStyle = `rgba(0,0,0,${(0.04 + Math.random() * 0.08).toFixed(3)})`;
-          ctx.beginPath(); ctx.arc(x, y, 6 + Math.random() * 10, 0, Math.PI * 2); ctx.fill();
-        }
-      }
       const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
     }
 
@@ -1880,9 +1823,9 @@
        LAYER A — DEEP STAR FIELD (with diffraction spikes)
        Two passes:
          1) Background sea of soft pinpoints (cheap, bloomed)
-         2) Bright stars with full diffraction spikes (~140 of them)
+         2) Bright stars with full diffraction spikes (fewer, softer)
     ============================================================ */
-    const STAR_COUNT = 6800;
+    const STAR_COUNT = 4200;
     const starGeo = new THREE.BufferGeometry();
     {
       const pos = new Float32Array(STAR_COUNT * 3);
@@ -1907,7 +1850,7 @@
         else                { h = 0.60 + Math.random() * 0.07; s = 0.10 + Math.random() * 0.20; l = 0.75 + Math.random() * 0.20; }
         const c = new THREE.Color().setHSL(h, s, l);
         col[i*3+0] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b;
-        sz[i] = 1.2 + Math.pow(Math.random(), 2.5) * 3.6;
+        sz[i] = 0.9 + Math.pow(Math.random(), 2.6) * 2.8;
         ph[i] = Math.random() * Math.PI * 2;
         sp[i] = 0.3 + Math.random() * 0.9;
       }
@@ -1950,7 +1893,7 @@
         void main() {
           vec4 t = texture2D(uTex, gl_PointCoord);
           if (t.a < 0.01) discard;
-          gl_FragColor = vec4(vColor * (0.7 + 0.6 * vTwinkle), t.a * uOpacity);
+          gl_FragColor = vec4(vColor * (0.52 + 0.38 * vTwinkle), t.a * uOpacity * 0.92);
         }
       `,
       transparent: true,
@@ -1962,7 +1905,7 @@
     scene.add(stars);
 
     /* ----- BRIGHT STARS WITH DIFFRACTION SPIKES (rare, beautiful) ----- */
-    const SPIKE_STAR_COUNT = 160;
+    const SPIKE_STAR_COUNT = 72;
     const spikeGeo = new THREE.BufferGeometry();
     {
       const pos = new Float32Array(SPIKE_STAR_COUNT * 3);
@@ -1983,7 +1926,7 @@
         else                { h = 0.60 + Math.random() * 0.06; s = 0.05 + Math.random() * 0.10; l = 0.85 + Math.random() * 0.10; } // white
         const c = new THREE.Color().setHSL(h, s, l);
         col[i*3+0] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b;
-        sz[i] = 22 + Math.random() * 28;
+        sz[i] = 15 + Math.random() * 18;
         ph[i] = Math.random() * Math.PI * 2;
       }
       spikeGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -2024,8 +1967,8 @@
           vec4 t = texture2D(uTex, gl_PointCoord);
           if (t.a < 0.01) discard;
           // Tint white core with star color, biased toward white at center
-          vec3 col = mix(vColor, vec3(1.0), 0.65);
-          gl_FragColor = vec4(col * (0.8 + 0.5 * vTwinkle), t.a * uOpacity);
+          vec3 col = mix(vColor, vec3(1.0), 0.38);
+          gl_FragColor = vec4(col * (0.58 + 0.32 * vTwinkle), t.a * uOpacity * 0.88);
         }
       `,
       transparent: true,
@@ -2041,7 +1984,7 @@
        Dense star band along an inclined plane — that "diagonal band of stars"
        you see in real night skies. Rotated so it crosses the scene.
     ============================================================ */
-    const MW_COUNT = 9000;
+    const MW_COUNT = 5000;
     const mwGroup = new THREE.Group();
     {
       const geo = new THREE.BufferGeometry();
@@ -2065,7 +2008,7 @@
         else                { h = 0.10; s = 0.20; l = 0.80 + Math.random() * 0.15; } // creamy white
         const c = new THREE.Color().setHSL(h, s, l);
         col[i*3+0] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b;
-        sz[i] = 0.8 + Math.pow(Math.random(), 2.0) * 2.6;
+        sz[i] = 0.65 + Math.pow(Math.random(), 2.1) * 2.0;
       }
       geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       geo.setAttribute('aColor',   new THREE.BufferAttribute(col, 3));
@@ -2085,7 +2028,7 @@
             vColor = aColor;
             vec4 mv = modelViewMatrix * vec4(position, 1.0);
             gl_Position = projectionMatrix * mv;
-            gl_PointSize = aSize * uPixel * (380.0 / -mv.z);
+            gl_PointSize = aSize * uPixel * (300.0 / -mv.z);
           }
         `,
         fragmentShader: /* glsl */`
@@ -2095,7 +2038,7 @@
           void main() {
             vec4 t = texture2D(uTex, gl_PointCoord);
             if (t.a < 0.01) discard;
-            gl_FragColor = vec4(vColor, t.a * uOpacity);
+            gl_FragColor = vec4(vColor * 0.88, t.a * uOpacity * 0.85);
           }
         `,
         transparent: true,
@@ -2111,10 +2054,10 @@
       const hazeMat = new THREE.SpriteMaterial({
         map: hazeTex, color: 0xffffff,
         blending: THREE.AdditiveBlending,
-        transparent: true, depthWrite: false, opacity: 0.05,
+        transparent: true, depthWrite: false, opacity: 0.028,
       });
       const haze = new THREE.Sprite(hazeMat);
-      haze.scale.set(11000, 1800, 1);
+      haze.scale.set(9200, 1500, 1);
       haze.layers.set(BLOOM_SCENE);
       mwGroup.add(haze);
       mwGroup.userData.hazeMat = hazeMat;
@@ -2126,7 +2069,7 @@
     /* ============================================================
        LAYER B — NEAR DUST PINPOINTS (no bloom — crisp foreground specks)
     ============================================================ */
-    const DUST_COUNT = 720;
+    const DUST_COUNT = 440;
     const dustGeo = new THREE.BufferGeometry();
     {
       const pos = new Float32Array(DUST_COUNT * 3);
@@ -2184,8 +2127,8 @@
         void main() {
           vec4 t = texture2D(uTex, gl_PointCoord);
           if (t.a < 0.01) discard;
-          vec3 c = mix(vec3(0.78, 0.86, 1.0), vec3(1.0, 0.92, 0.84), 0.5);
-          gl_FragColor = vec4(c * vTone, t.a * vFade * uOpacity);
+          vec3 c = mix(vec3(0.72, 0.80, 0.95), vec3(0.96, 0.90, 0.82), 0.45);
+          gl_FragColor = vec4(c * vTone * 0.82, t.a * vFade * uOpacity);
         }
       `,
       transparent: true,
@@ -2207,7 +2150,7 @@
     });
     const anchorNeb = new THREE.Sprite(anchorMat);
     anchorNeb.position.set(0, 0, -250);
-    anchorNeb.scale.set(2400, 1700, 1);
+    anchorNeb.scale.set(1750, 1200, 1);
     anchorNeb.layers.enable(BLOOM_SCENE);
     scene.add(anchorNeb);
 
@@ -2231,8 +2174,8 @@
       const sprite = new THREE.Sprite(mat);
       const [cx, cy, cz] = clusterCenters[rid];
       sprite.position.set(cx, cy, cz - 280);
-      // Smaller, more contained — they read as cosmic landmarks, not background washes
-      sprite.scale.set(1100, 1100, 1);
+      // Smaller, softer — region color hints without dominating the void
+      sprite.scale.set(820, 820, 1);
       sprite.userData.region = rid;
       sprite.userData.baseZ = cz;
       sprite.layers.set(BLOOM_SCENE);
@@ -2240,36 +2183,8 @@
       nebulae.push({ sprite, region: rid });
     }
 
-    /* ============================================================
-       LAYER C2 — DISTANT BACKGROUND SPIRAL GALAXY (cosmic landmark)
-    ============================================================ */
-    const bgGalaxyTex1 = makeSpiralGalaxyTexture(0xffd9a8, 0xb8d8ff);
-    const bgGalaxyMat1 = new THREE.SpriteMaterial({
-      map: bgGalaxyTex1, color: 0xffffff,
-      blending: THREE.AdditiveBlending,
-      transparent: true, depthWrite: false,
-      opacity: live.galaxyOpacity,
-      rotation: 0.6,
-    });
-    const bgGalaxy1 = new THREE.Sprite(bgGalaxyMat1);
-    bgGalaxy1.position.set(-7800, 2200, -6600);
-    bgGalaxy1.scale.set(2600, 2600, 1);
-    bgGalaxy1.layers.set(BLOOM_SCENE);
-    scene.add(bgGalaxy1);
-
-    const bgGalaxyTex2 = makeSpiralGalaxyTexture(0xffe3c2, 0xc7baff);
-    const bgGalaxyMat2 = new THREE.SpriteMaterial({
-      map: bgGalaxyTex2, color: 0xffffff,
-      blending: THREE.AdditiveBlending,
-      transparent: true, depthWrite: false,
-      opacity: live.galaxyOpacity * 0.6,
-      rotation: -0.4,
-    });
-    const bgGalaxy2 = new THREE.Sprite(bgGalaxyMat2);
-    bgGalaxy2.position.set(6900, -1800, -7400);
-    bgGalaxy2.scale.set(1700, 1700, 1);
-    bgGalaxy2.layers.set(BLOOM_SCENE);
-    scene.add(bgGalaxy2);
+    /* Distant spiral-galaxy sprites removed — they read as loud “spiral orbs”
+       and fatigued the eye; the void + Milky Way + soft region nebulae carry depth. */
 
     /* ============================================================
        LAYER D — NODES (TIER-AWARE) + LENS FLARES on main stars
@@ -2291,7 +2206,7 @@
       const haloMat = new THREE.SpriteMaterial({
         map: GLOW_TEX, color: color,
         blending: THREE.AdditiveBlending,
-        transparent: true, depthWrite: false, opacity: 0.32,
+        transparent: true, depthWrite: false, opacity: 0.20,
       });
       const halo = new THREE.Sprite(haloMat);
       halo.scale.set(tier.haloIdle, tier.haloIdle, 1);
@@ -2304,7 +2219,7 @@
         const flareMat = new THREE.SpriteMaterial({
           map: FLARE_TEX, color: new THREE.Color(0xffffff).lerp(color, 0.35),
           blending: THREE.AdditiveBlending,
-          transparent: true, depthWrite: false, opacity: 0.32,
+          transparent: true, depthWrite: false, opacity: 0.20,
         });
         flare = new THREE.Sprite(flareMat);
         flare.scale.set(tier.flareScaleX, tier.flareScaleY, 1);
@@ -2929,21 +2844,21 @@
         const st = progress[n.id] || 'idle';
         if (st === 'mastered') mastered++;
 
-        const baseAlphaIdle   = (themeName === 'dark' ? 0.32 : 0.50);
-        const baseAlphaLearn  = (themeName === 'dark' ? 0.62 : 0.78);
-        const baseAlphaMaster = (themeName === 'dark' ? 0.85 : 0.95);
+        const baseAlphaIdle   = (themeName === 'dark' ? 0.20 : 0.34);
+        const baseAlphaLearn  = (themeName === 'dark' ? 0.42 : 0.58);
+        const baseAlphaMaster = (themeName === 'dark' ? 0.58 : 0.72);
 
         let haloScale, haloOpacity, learnRingOpacity;
         if (st === 'idle')          { haloScale = t.haloIdle;   haloOpacity = baseAlphaIdle   * t.haloAlphaIdleMul;   learnRingOpacity = 0;    }
-        else if (st === 'learning') { haloScale = t.haloLearn;  haloOpacity = baseAlphaLearn  * t.haloAlphaLearnMul;  learnRingOpacity = 0.6;  }
+        else if (st === 'learning') { haloScale = t.haloLearn;  haloOpacity = baseAlphaLearn  * t.haloAlphaLearnMul;  learnRingOpacity = 0.45;  }
         else                        { haloScale = t.haloMaster; haloOpacity = baseAlphaMaster * t.haloAlphaMasterMul; learnRingOpacity = 0;    }
 
         v.halo.userData.targetScale = haloScale;
         v.halo.userData.targetOpacity = haloOpacity;
         v.learnRing.userData.targetOpacity = learnRingOpacity;
-        v.readyRing.userData.targetOpacity = isReady(n.id) ? 0.55 : 0;
+        v.readyRing.userData.targetOpacity = isReady(n.id) ? 0.40 : 0;
 
-        const coreScale = st === 'mastered' ? 1.6 : st === 'learning' ? 1.2 : 1.0;
+        const coreScale = st === 'mastered' ? 1.35 : st === 'learning' ? 1.12 : 1.0;
         v.core.userData.targetScale = coreScale;
       });
 
@@ -2996,7 +2911,7 @@
           (a === focusId && b === n.id) || (b === focusId && a === n.id));
         let mult = 1;
         if (focusId && !isFocus && !isNeighbor) mult = 0.55;
-        if (isFocus) mult = 1.20;
+        if (isFocus) mult = 1.10;
         if (q && !isOnQuestPath(n.id) && !isFocus && !isNeighbor) mult *= 0.75;
         if (q && isOnQuestPath(n.id)) mult = Math.max(mult, 1.05);
         v.halo.userData.focusMult = mult;
@@ -3105,13 +3020,13 @@
           // Distance-attenuated flares — strong when close, faint when far.
           const dist = camera.position.distanceTo(v.group.position);
           const distMul = THREE.MathUtils.smoothstep(dist, 5500, 1200);
-          const flareTargetOp = (st === 'mastered' ? 0.55 : st === 'learning' ? 0.42 : 0.30)
-                              * (isFocus ? 1.4 : 1.0)
+          const flareTargetOp = (st === 'mastered' ? 0.38 : st === 'learning' ? 0.30 : 0.20)
+                              * (isFocus ? 1.25 : 1.0)
                               * distMul;
           v.flare.material.opacity = lerp(v.flare.material.opacity, flareTargetOp, k);
           const flicker = 1 + 0.05 * Math.sin(t * 3.4 + n.pos[1] * 0.002);
-          v.flare.scale.x = v.tier.flareScaleX * flicker * (isFocus ? 1.2 : 1.0);
-          v.flare.scale.y = v.tier.flareScaleY * (isFocus ? 1.4 : 1.0);
+          v.flare.scale.x = v.tier.flareScaleX * flicker * (isFocus ? 1.06 : 1.0);
+          v.flare.scale.y = v.tier.flareScaleY * (isFocus ? 1.12 : 1.0);
         }
 
         const targetCoreScale = (core.userData.targetScale ?? 1) * (1 + 0.04 * Math.sin(t * 1.6 + n.pos[1] * 0.002));
@@ -3704,17 +3619,16 @@
       bloomPass.threshold = live.bloomThreshold;
 
       starMat.uniforms.uOpacity.value = live.starOpacity;
+      spikeMat.uniforms.uOpacity.value = live.starOpacity * 0.88;
       dustMat.uniforms.uOpacity.value = live.dustOpacity;
       anchorMat.opacity = live.anchorOpacity;
-      bgGalaxyMat1.opacity = live.galaxyOpacity;
-      bgGalaxyMat2.opacity = live.galaxyOpacity * 0.6;
       mwGroup.children.forEach(child => {
         if (child.material && child.material.uniforms && child.material.uniforms.uOpacity) {
           child.material.uniforms.uOpacity.value = live.milkywayOpacity;
         }
       });
       if (mwGroup.userData.hazeMat) {
-        mwGroup.userData.hazeMat.opacity = live.milkywayOpacity * 0.08;
+        mwGroup.userData.hazeMat.opacity = live.milkywayOpacity * 0.045;
       }
 
       regionLineMats.forEach(m => { m.opacity = live.regionLineOpacity; });
@@ -3772,9 +3686,6 @@
       spikeStars.rotation.y = t * 0.005;
       mwGroup.rotation.y += dt * 0.003;
       dust.rotation.y = t * 0.012;
-      // Subtle slow rotation for distant galaxies
-      bgGalaxyMat1.rotation += dt * 0.005;
-      bgGalaxyMat2.rotation -= dt * 0.004;
 
       if (camTween) camTween(performance.now());
 
